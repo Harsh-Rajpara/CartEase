@@ -165,13 +165,13 @@ console.log("Account:", account);
         return res
             .cookie("accessToken", accessToken, { 
                 httpOnly: true,
-                sameSite: "lax",     
-                secure: false, 
+                sameSite: "none",     
+                secure: true, 
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true,
-                sameSite: "lax",   
-                secure: false, 
+                sameSite: "none",   
+                secure: true, 
             })
             .status(200)
             .json({
