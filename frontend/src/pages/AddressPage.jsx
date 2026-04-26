@@ -29,7 +29,7 @@ const AddressesPage = () => {
     message: "",
     type: "",
   });
-  // const [showLimitModal, setShowLimitModal] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
   const [formData, setFormData] = useState({
     flatHouseNo: "",
     areaStreet: "",

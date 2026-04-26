@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { 
     Package, ChevronRight, Truck, CheckCircle, Clock, 
-    XCircle, Calendar, MapPin, CreditCard
+    XCircle, Calendar, MapPin, CreditCard, X
 } from 'lucide-react';
 import api from '../services/api';
 
@@ -11,17 +11,17 @@ const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedOrder, setSelectedOrder] = useState(null);
-    // const [filterStatus, setFilterStatus] = useState('all');
-    // const [searchTerm, setSearchTerm] = useState('');
-    // const [sortBy, setSortBy] = useState('newest');
-    // const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+    const [filterStatus, setFilterStatus] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('newest');
+    const [showFilterDropdown, setShowFilterDropdown] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    // const [stats, setStats] = useState({
-    //     total: 0,
-    //     delivered: 0,
-    //     processing: 0,
-    //     cancelled: 0
-    // });
+    const [stats, setStats] = useState({
+        total: 0,
+        delivered: 0,
+        processing: 0,
+        cancelled: 0
+    });
 
     // Fetch orders function
     const fetchOrders = useCallback(async () => {
