@@ -1,7 +1,7 @@
 // frontend/src/components/NotFoundPage.jsx
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Home, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 const NotFoundPage = () => {
   const location = useLocation();

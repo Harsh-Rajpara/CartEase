@@ -1,7 +1,7 @@
 // components/ProductCard.jsx
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { Star, Heart, ShoppingCart } from 'lucide-react';
+import {  useNavigate } from 'react-router-dom';
+// import { Star, Heart, ShoppingCart } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -29,17 +29,17 @@ const ProductCard = ({ product }) => {
 
   const imageUrl = getImageUrl();
 
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Add to cart logic
-  };
+  // const handleAddToCart = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   // Add to cart logic
+  // };
 
-  const handleWishlist = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Wishlist logic
-  };
+  // const handleWishlist = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   // Wishlist logic
+  // };
 
   const handleCardClick = () => {
     navigate(`/products/${product._id}`);

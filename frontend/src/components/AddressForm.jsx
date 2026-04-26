@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { X, MapPin, AlertCircle, Home, Briefcase } from 'lucide-react';
+import { X, MapPin, AlertCircle } from 'lucide-react';
 
 // Validation Schema
 const addressValidationSchema = Yup.object({

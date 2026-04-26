@@ -7,22 +7,18 @@ import {
   Edit2,
   Trash2,
   Home,
-  Building,
-  Navigation,
   Check,
   X,
   AlertCircle,
   Loader,
-  Star,
-  AlertTriangle,
-  Eye,
+
 } from "lucide-react";
 import api from "../services/api";
 
 const AddressesPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  // const { user } = useSelector((state) => state.auth);
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -33,7 +29,7 @@ const AddressesPage = () => {
     message: "",
     type: "",
   });
-  const [showLimitModal, setShowLimitModal] = useState(false);
+  // const [showLimitModal, setShowLimitModal] = useState(false);
   const [formData, setFormData] = useState({
     flatHouseNo: "",
     areaStreet: "",

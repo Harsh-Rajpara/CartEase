@@ -11,14 +11,7 @@ import {
   Phone, 
   Mail, 
   Clock,
-  Shield,
-  Truck,
-  RotateCcw,
-  CreditCard,
-  DollarSign,
   Heart,
-  ShoppingBag,
-  Star
 } from 'lucide-react';
 
 const Footer = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Edit, Trash2, Plus } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import addressService from '../services/address.service';
 
 const AddressList = ({ onAddressSelect, selectedAddressId }) => {
@@ -24,30 +24,30 @@ const AddressList = ({ onAddressSelect, selectedAddressId }) => {
         }
     };
 
-    const handleDeleteAddress = async (addressId) => {
-        if (window.confirm('Are you sure you want to delete this address?')) {
-            try {
-                const response = await addressService.deleteAddress(addressId);
-                if (response.success) {
-                    await fetchAddresses();
-                    if (selectedAddressId === addressId) {
-                        onAddressSelect?.(null);
-                    }
-                }
-            } catch (error) {
-                console.error('Error deleting address:', error);
-                alert('Failed to delete address');
-            }
-        }
-    };
+    // const handleDeleteAddress = async (addressId) => {
+    //     if (window.confirm('Are you sure you want to delete this address?')) {
+    //         try {
+    //             const response = await addressService.deleteAddress(addressId);
+    //             if (response.success) {
+    //                 await fetchAddresses();
+    //                 if (selectedAddressId === addressId) {
+    //                     onAddressSelect?.(null);
+    //                 }
+    //             }
+    //         } catch (error) {
+    //             console.error('Error deleting address:', error);
+    //             alert('Failed to delete address');
+    //         }
+    //     }
+    // };
 
     const handleManageAddresses = () => {
         navigate('/addresses');
     };
 
-    const handleAddNewAddress = () => {
-        navigate('/addresses/new');
-    };
+    // const handleAddNewAddress = () => {
+    //     navigate('/addresses/new');
+    // };
 
     return (
         <div className="space-y-4">

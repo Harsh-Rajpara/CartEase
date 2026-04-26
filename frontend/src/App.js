@@ -11,7 +11,6 @@ import api from "./services/api";
 
 // Components
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import NotFoundPage from "./components/NotFoundPage";
