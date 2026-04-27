@@ -1,10 +1,10 @@
 // frontend/src/services/auth.service.js
 import api from './api';
-
+// https://cartease-backend-rdw1.onrender.com/
 const authService = {
     // Regular User Registration
     sendEmailOTP: (email) => {
-        return api.post('/register/send-email-otp', { email });
+        return api.post('api/register/send-email-otp', { email });
     },
     
     verifyEmailOTP: (email, otp) => {
