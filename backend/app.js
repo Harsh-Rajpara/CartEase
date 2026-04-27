@@ -27,7 +27,7 @@ const app = express();
 // ✅ Enable CORS for frontend
 app.use(
   cors({
-    origin: ["http://localhost:3000", "https://cart-ease-auew8g9s7-hrajpara715-7145s-projects.vercel.app"], // Your React frontend URL
+    origin: ["https://cart-ease.vercel.app/"], // Your React frontend URL
     credentials: true, // Allow cookies to be sent
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
