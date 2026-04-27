@@ -246,7 +246,7 @@ const HomePage = () => {
     setError(null);
     
     try {
-      const response = await api.get('/products', {
+      const response = await api.get('api/products', {
         params: { limit: 50, page: 1 }
       });
       
