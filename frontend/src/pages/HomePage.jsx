@@ -5,6 +5,7 @@ import { Star, Truck, Shield, Headphones, ChevronRight, IndianRupee } from 'luci
 import SkeletonLoader from '../SkeletonLoader';
 import api from '../services/api';
 import Footer from '../components/Footer';
+import axios from 'axios';
 
 // Category data with relevant images for each category
 const categories = [
@@ -246,9 +247,12 @@ const HomePage = () => {
     setError(null);
     
     try {
-      const response = await api.get('api/products', {
-        params: { limit: 50, page: 1 }
-      });
+      const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products",{
+        params : {limit:50,page:1}
+      })
+      // const response = await api.get('api/products', {
+      //   params: { limit: 50, page: 1 }
+      // });
       
       if (response.data?.success && response.data.data) {
         const allProducts = response.data.data;
