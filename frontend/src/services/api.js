@@ -1,5 +1,6 @@
 // frontend/src/services/api.js
 import axios from 'axios';
+console.log("API:", process.env.REACT_APP_API_URL); // 👈 ADD HERE
 
 const API_BASE_URL = process.env.REACT_APP_API_URL ;
 
