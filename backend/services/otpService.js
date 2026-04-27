@@ -20,6 +20,10 @@ exports.generateSimpleOTP = () => {
 // Send OTP via Email (for development - logs to console)
 exports.sendOTPByEmail  = async (email, otp) => {
      await sendOTPByEmail (email, otp);
+
+      console.log('\n=================================');
+    console.log(`📱 OTP for ${email}: ${otp}`);
+    console.log('=================================\n');
 };
 
 // Send OTP via SMS (for development - logs to console)
