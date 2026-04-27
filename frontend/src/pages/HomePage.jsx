@@ -247,11 +247,12 @@ const HomePage = () => {
     setError(null);
     
     try {
-      const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products")
-      // const response = await api.get('api/products', {
-      //   params: { limit: 50, page: 1 }
-      // });
-      
+      // const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products")
+      const response = await api.get('api/products', {
+        params: { limit: 50, page: 1 }
+      });
+      console.log("API:", process.env.REACT_APP_API_URL); // 👈 ADD HERE
+
       if (response.data?.success && response.data.data) {
         const allProducts = response.data.data;
         
