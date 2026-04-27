@@ -279,7 +279,8 @@ const HomePage = () => {
         setError('Failed to load products');
       }
     } catch (err) {
-      setError('Failed to connect to server');
+      console.log(error);
+      setError('Failed to connct to server');
     } finally {
       setLoading(false);
     }
