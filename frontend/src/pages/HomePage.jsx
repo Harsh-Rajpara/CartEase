@@ -247,9 +247,7 @@ const HomePage = () => {
     setError(null);
     
     try {
-      const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products",{
-        params : {limit:50,page:1}
-      })
+      const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products")
       // const response = await api.get('api/products', {
       //   params: { limit: 50, page: 1 }
       // });
@@ -279,7 +277,7 @@ const HomePage = () => {
         setError('Failed to load products');
       }
     } catch (err) {
-      console.log(error);
+      console.log(err);
       setError('Failed to connct to server');
     } finally {
       setLoading(false);
