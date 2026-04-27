@@ -248,7 +248,7 @@ const HomePage = () => {
     
     try {
       // const response = await axios.get("https://cartease-backend-rdw1.onrender.com/api/products")
-      const response = await api.get('api/products', {
+      const response = await api.get('/products', {
         params: { limit: 50, page: 1 }
       });
       console.log("API:", process.env.REACT_APP_API_URL); // 👈 ADD HERE
