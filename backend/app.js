@@ -24,6 +24,8 @@ const indexRoutes = require("./routes/indexRoutes");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // ✅ Enable CORS for frontend
 app.use(
   cors({
