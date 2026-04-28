@@ -167,11 +167,13 @@ console.log("Account:", account);
                 httpOnly: true,
                 sameSite: "none",     
                 secure: true, 
+                maxAge: 24 * 60 * 60 * 1000
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true,
                 sameSite: "none",   
                 secure: true, 
+                maxAge: 7 * 24 * 60 * 60 * 1000
             })
             .status(200)
             .json({
@@ -397,14 +399,14 @@ const refreshToken = jwt.sign(
         res
             .cookie("accessToken", accessToken, { 
                 httpOnly: true, 
-                secure: process.env.NODE_ENV === "production",
-                sameSite: 'strict',
-                maxAge: 15 * 60 * 1000
+                secure: true,
+                sameSite: "None",
+                maxAge: 24 * 60 * 60 * 1000
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true, 
-                secure: process.env.NODE_ENV === "production",
-                sameSite: 'strict',
+                secure: true,
+                sameSite: "None",
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
             .status(201)
@@ -648,14 +650,14 @@ exports.verifyOTP = async (req, res) => {
         res
             .cookie("accessToken", accessToken, { 
                 httpOnly: true, 
-                secure: process.env.NODE_ENV === "production",
-                sameSite: 'strict',
-                maxAge: 15 * 60 * 1000
+                secure: true,
+                sameSite: "None",
+                maxAge: 24 * 60 * 60 * 1000
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true, 
-                secure: process.env.NODE_ENV === "production",
-                sameSite: 'strict',
+                secure: true,
+                sameSite: "None",
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
             .status(200)

@@ -371,7 +371,7 @@ exports.completeRegistration = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "None" ,
-            maxAge: 15 * 60 * 1000
+            maxAge: 24 * 60 * 60 * 1000
         });
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,

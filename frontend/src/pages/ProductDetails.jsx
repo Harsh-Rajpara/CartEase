@@ -280,46 +280,31 @@ const ProductDetails = () => {
   };
 
   const handleBuyNow = async () => {
-    if (!isAuthenticated) {
-      navigate("/login", { state: { from: `/product/${id}` } });
-      return;
-    }
+  if (!isAuthenticated) {
+    navigate("/login", { state: { from: `/product/${id}` } });
+    return;
+  }
 
-    if (!selectedVariantStock || selectedVariantStock === 0) return;
+  if (!selectedVariantStock || selectedVariantStock === 0) return;
 
-    setCheckingAddress(true);
-
-    try {
-      const response = await addressService.getMyAddresses();
-
-      if (response.data && response.data.length > 0) {
-        const buyNowProduct = {
-          productId: product._id,
-          name: product.name,
-          price: selectedVariantPrice || product.price,
-          quantity: quantity,
-          image: product.images?.[0]?.url || "/api/placeholder/300/300",
-          variant: Object.entries(selectedVariants)
-            .map(([type, value]) => `${type}: ${value}`)
-            .join(", "),
-        };
-
-        navigate("/checkout", {
-          state: {
-            buyNow: true,
-            product: buyNowProduct,
-          },
-        });
-      } else {
-        setShowAddressForm(true);
-      }
-    } catch (error) {
-      console.error("Error checking addresses:", error);
-      setShowAddressForm(true);
-    } finally {
-      setCheckingAddress(false);
-    }
+  const buyNowProduct = {
+    productId: product._id,
+    name: product.name,
+    price: selectedVariantPrice || product.price,
+    quantity: quantity,
+    image: product.images?.[0]?.url || "/api/placeholder/300/300",
+    variant: Object.entries(selectedVariants)
+      .map(([type, value]) => `${type}: ${value}`)
+      .join(", "),
   };
+
+  navigate("/checkout", {
+    state: {
+      buyNow: true,
+      product: buyNowProduct,
+    },
+  });
+};
 
   const handleAddressSubmit = async (addressData) => {
     try {
@@ -721,14 +706,12 @@ const ProductDetails = () => {
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    disabled={checkingAddress}
+                    // disabled={checkingAddress}
                     className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition disabled:opacity-50 flex items-center justify-center text-sm sm:text-base"
                   >
-                    {checkingAddress ? (
-                      <Loader className="animate-spin h-5 w-5" />
-                    ) : (
+                   
                       "Buy Now"
-                    )}
+                   
                   </button>
                 </div>
               )}
@@ -940,14 +923,7 @@ const ProductDetails = () => {
         </div>
       )}
 
-      {/* Address Form Modal */}
-      <AddressForm
-        isOpen={showAddressForm}
-        initialValues={null}
-        onSubmit={handleAddressSubmit}
-        onClose={() => setShowAddressForm(false)}
-        loading={false}
-      />
+     
 
       <style jsx>{`
         @keyframes slide-in {
