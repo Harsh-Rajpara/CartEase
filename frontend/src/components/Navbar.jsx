@@ -173,7 +173,7 @@ const Navbar = () => {
                             )}
                             
                             {!isAuthenticated && (
-                                <Link to="/login" className="text-orange-600 text-sm font-semibold">
+                                <Link to="/login" className="text-orange-600 text-base font-semibold">
                                     Login
                                 </Link>
                             )}

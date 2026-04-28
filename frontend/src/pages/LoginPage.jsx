@@ -317,7 +317,7 @@ const LoginPage = () => {
           {showOtpInput && (
             <button
               onClick={switchToPasswordMode}
-              className="flex items-center text-gray-600 hover:text-gray-900 mb-4 focus:outline-none transition-colors"
+              className="flex items-center text-orange-600 hover:text-orange-800 hover:text-gray-900 mb-4 focus:outline-none transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
               Back to password login
