@@ -787,74 +787,74 @@ exports.resendOTP = async (req, res) => {
 
 
 // GET /api/auth/me
-exports.getCurrentUser = async (req, res) => {
-    try {
-        let userData;
+// exports.getCurrentUser = async (req, res) => {
+//     try {
+//         let userData;
         
-        // Check role from token (attached by protect middleware)
-        if (req.user.role === 'seller') {
-            // Get seller data
-            userData = await Seller.findById(req.user.id)
-                .select('-password -refreshToken -__v -bankDetails.accountNumber -bankDetails.ifscCode');
+//         // Check role from token (attached by protect middleware)
+//         if (req.user.role === 'seller') {
+//             // Get seller data
+//             userData = await Seller.findById(req.user.id)
+//                 .select('-password -refreshToken -__v -bankDetails.accountNumber -bankDetails.ifscCode');
             
-            if (!userData) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Seller not found"
-                });
-            }
+//             if (!userData) {
+//                 return res.status(404).json({
+//                     success: false,
+//                     message: "Seller not found"
+//                 });
+//             }
             
-            // Add role to response
-            userData = userData.toObject();
-            userData.role = 'seller';
-            console.log("userdata ", userData);
-        } else if (req.user.role === 'admin') {
-            // Get admin data (from User model)
-            userData = await User.findById(req.user.id)
-                .select('-password -refreshToken -__v');
+//             // Add role to response
+//             userData = userData.toObject();
+//             userData.role = 'seller';
+//             console.log("userdata ", userData);
+//         } else if (req.user.role === 'admin') {
+//             // Get admin data (from User model)
+//             userData = await User.findById(req.user.id)
+//                 .select('-password -refreshToken -__v');
             
-            if (!userData) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Admin not found"
-                });
-            }
+//             if (!userData) {
+//                 return res.status(404).json({
+//                     success: false,
+//                     message: "Admin not found"
+//                 });
+//             }
             
-            userData = userData.toObject();
-            userData.role = 'admin';
-                        console.log("quserdata ", userData);
+//             userData = userData.toObject();
+//             userData.role = 'admin';
+//                         console.log("quserdata ", userData);
 
-        } else {
-            // Get regular user data
-            userData = await User.findById(req.user.id)
-                .select('-password -refreshToken -__v');
+//         } else {
+//             // Get regular user data
+//             userData = await User.findById(req.user.id)
+//                 .select('-password -refreshToken -__v');
             
-            if (!userData) {
-                return res.status(404).json({
-                    success: false,
-                    message: "User not found"
-                });
-            }
+//             if (!userData) {
+//                 return res.status(404).json({
+//                     success: false,
+//                     message: "User not found"
+//                 });
+//             }
             
-            userData = userData.toObject();
-            userData.role = 'user';
-        }
-                    console.log("suserdata ", userData);
+//             userData = userData.toObject();
+//             userData.role = 'user';
+//         }
+//                     console.log("suserdata ", userData);
 
-        res.status(200).json({
-            success: true,
-            data: userData,
-            message: "User fetched successfully"
-        });
+//         res.status(200).json({
+//             success: true,
+//             data: userData,
+//             message: "User fetched successfully"
+//         });
         
-    } catch (error) {
-        console.error("Get current user error:", error);
-        res.status(500).json({
-            success: false,
-            message: error.message || "Internal Server Error"
-        });
-    }
-};
+//     } catch (error) {
+//         console.error("Get current user error:", error);
+//         res.status(500).json({
+//             success: false,
+//             message: error.message || "Internal Server Error"
+//         });
+//     }
+// };
 
 
 exports.logout = async (req, res) => {
@@ -873,14 +873,14 @@ exports.logout = async (req, res) => {
         // 🔥 2. Clear cookies
         res.clearCookie("accessToken", {
             httpOnly: true,
-            sameSite: "lax",
-            secure: false
+            sameSite: "None",
+            secure: true
         });
 
         res.clearCookie("refreshToken", {
             httpOnly: true,
-            sameSite: "lax",
-            secure: false
+            sameSite: "None",
+            secure: true
         });
 
         // 🔥 3. Send response
