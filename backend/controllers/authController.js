@@ -166,13 +166,13 @@ console.log("Account:", account);
             .cookie("accessToken", accessToken, { 
                 httpOnly: true,
                 sameSite: "none",     
-                secure: false, 
+                secure: true, 
                 maxAge: 24 * 60 * 60 * 1000
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true,
                 sameSite: "none",   
-                secure: false, 
+                secure: true, 
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
             .status(200)
