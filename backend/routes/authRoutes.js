@@ -7,7 +7,7 @@ const {
   sendOTP,
   verifyOTP,
   resendOTP,
-  // getCurrentUser,
+  getCurrentUser,
   logout,
   checkEmail,
   checkPhone
@@ -25,6 +25,6 @@ router.post('/resend-otp', sendOTP); // Reuse sendOTP for resend
 router.post('/logout',protect,logout);
 router.post('/check-email', checkEmail);
 router.post('/check-phone', checkPhone);
-// router.get('/me', protect, getCurrentUser);
+router.get('/me', protect, getCurrentUser);
 
 module.exports = router;
