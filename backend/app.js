@@ -29,7 +29,7 @@ app.set("trust proxy", 1);
 // ✅ Enable CORS for frontend
 app.use(
   cors({
-    origin: ["https://cart-ease.vercel.app","http://localhost:3000"], // Your React frontend URL
+    origin: ["https://cart-ease.vercel.app"], // Your React frontend URL
     credentials: true, // Allow cookies to be sent
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
