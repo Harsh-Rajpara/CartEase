@@ -2,15 +2,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
-    User, ShoppingBag, MapPin, LogOut, ChevronRight
+    User, ShoppingBag, MapPin, LogOut, ChevronRight,
+    Loader2
 } from 'lucide-react';
 import ProfileModal from './ProfileModal';
 
 const AccountMenu = ({ user, onClose, onLogout }) => {
     const menuRef = useRef(null);
     const [showProfileModal, setShowProfileModal] = useState(false);
-
-    console.log('AccountMenu rendered, showProfileModal:', showProfileModal);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -30,6 +30,23 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
         // Don't close the menu immediately, let modal open first
         // onClose(); 
     };
+
+    const handleLogout = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        setIsLoggingOut(true);
+        
+        try {
+            // Call the logout function from parent
+            await onLogout();
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            setIsLoggingOut(false);
+        }
+    };
+
 
     const menuItems = [
         { icon: User, label: 'My Profile', onClick: handleProfileClick, color: 'text-blue-600' },
@@ -103,11 +120,21 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
                 {/* Logout Button */}
                 <div className="border-t border-gray-200 bg-gray-50">
                     <button
-                        onClick={onLogout}
-                        className="flex items-center w-full px-6 py-3 hover:bg-red-50 transition-colors group"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="flex items-center w-full px-6 py-3 hover:bg-red-50 transition-colors group "
                     >
-                        <LogOut className="h-5 w-5 text-red-500 group-hover:text-red-600" />
-                        <span className="ml-3 text-sm text-red-600 font-medium group-hover:text-red-700">Logout</span>
+                        {isLoggingOut ? (
+                            <>
+                                <Loader2 className="h-5 w-5 text-red-500 animate-spin" />
+                                <span className="ml-3 text-sm text-red-600 font-medium">Logging out...</span>
+                            </>
+                        ) : (
+                            <>
+                                <LogOut className="h-5 w-5 text-red-500 group-hover:text-red-600" />
+                                <span className="ml-3 text-sm text-red-600 font-medium group-hover:text-red-700">Logout</span>
+                            </>
+                        )}
                     </button>
                 </div>
             </div>
