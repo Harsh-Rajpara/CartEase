@@ -43,10 +43,10 @@ const Navbar = () => {
         try {
             await api.post('/auth/logout');
             dispatch(logout());
-            navigate('/login');
+            navigate('/');
         } catch (error) {
             dispatch(logout());
-            navigate('/login');
+            navigate('/');
         }
         setShowAccountMenu(false);
     };
