@@ -165,7 +165,7 @@ const AdminLayout = () => {
           {(!isMobile && sidebarOpen) || isMobile ? (
             <>
               <div className="flex items-center">
-                <Store className="h-8 w-8 text-blue-600" />
+                <Store className="h-8 w-8 text-orange-600" />
                 <span className={`ml-2 text-xl font-bold text-gray-900 transition-opacity duration-300 ${
                   !isMobile && !sidebarOpen ? 'hidden' : 'block'
                 }`}>
@@ -179,7 +179,7 @@ const AdminLayout = () => {
               )}
             </>
           ) : (
-            <Store className="h-8 w-8 text-blue-600" />
+            <Store className="h-8 w-8 text-orange-600" />
           )}
         </div>
 
@@ -196,13 +196,13 @@ const AdminLayout = () => {
                 }}
                 className={`w-full flex items-center px-3 py-2.5 text-sm rounded-lg transition-all duration-200 group ${
                   isActive
-                    ? 'bg-blue-50 text-blue-700'
+                    ? 'bg-orange-50 text-orange-700'
                     : 'text-gray-700 hover:bg-gray-100'
                 } ${!isMobile && !sidebarOpen ? 'justify-center' : ''}`}
                 title={!isMobile && !sidebarOpen ? item.name : ''}
               >
                 <item.icon className={`h-5 w-5 transition-all duration-200 ${
-                  isActive ? 'text-blue-700' : 'text-gray-500 group-hover:text-gray-700'
+                  isActive ? 'text-orange-700' : 'text-gray-500 group-hover:text-gray-700'
                 } ${!isMobile && !sidebarOpen ? 'mr-0' : 'mr-3'}`} />
                 <span className={`transition-opacity duration-200 ${
                   !isMobile && !sidebarOpen ? 'hidden' : 'inline'

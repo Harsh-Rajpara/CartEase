@@ -18,7 +18,6 @@ const AddressList = ({ onAddressSelect, selectedAddressId }) => {
             const response = await addressService.getMyAddresses();
             setAddresses(response.data || []);
         } catch (error) {
-            console.error('Error fetching addresses:', error);
         } finally {
             setLoading(false);
         }

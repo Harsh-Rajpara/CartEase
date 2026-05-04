@@ -129,23 +129,16 @@ const SellerLayout = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">Verification Rejected</h2>
           <p className="text-gray-600 mb-4">
-            Your seller account verification has been rejected. Please contact support for more information.
+            Your seller account verification has been rejected.
           </p>
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
             <p className="text-sm text-red-800">
               <strong>Reason:</strong> {user?.rejectionReason || 'Your application did not meet our requirements'}
             </p>
-            <p className="text-xs text-red-600 mt-1">
-              Please contact support to resolve this issue
-            </p>
+            
           </div>
           <div className="space-y-3">
-            <button
-              onClick={() => navigate('/contact-support')}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            >
-              Contact Support
-            </button>
+          
             <button
               onClick={handleLogout}
               className="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
@@ -232,7 +225,7 @@ const SellerLayout = () => {
             {(!isMobile && sidebarOpen) || isMobile ? (
               <>
                 <div className="flex items-center">
-                  <Store className="h-8 w-8 text-blue-600" />
+                  <Store className="h-8 w-8 text-orange-600" />
                   <span className={`ml-2 text-xl font-bold text-gray-900 transition-opacity duration-300 ${
                     !isMobile && !sidebarOpen ? 'hidden' : 'block'
                   }`}>
@@ -246,7 +239,7 @@ const SellerLayout = () => {
                 )}
               </>
             ) : (
-              <Store className="h-8 w-8 text-blue-600" />
+              <Store className="h-8 w-8 text-orange-600" />
             )}
           </div>
 
@@ -263,13 +256,13 @@ const SellerLayout = () => {
                   }}
                   className={`w-full flex items-center px-3 py-2.5 text-sm rounded-lg transition-all duration-200 group ${
                     isActive
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-orange-50 text-orange-700'
                       : 'text-gray-700 hover:bg-gray-100'
                   } ${!isMobile && !sidebarOpen ? 'justify-center' : ''}`}
                   title={!isMobile && !sidebarOpen ? item.name : ''}
                 >
                   <item.icon className={`h-5 w-5 transition-all duration-200 ${
-                    isActive ? 'text-blue-700' : 'text-gray-500 group-hover:text-gray-700'
+                    isActive ? 'text-orange-700' : 'text-gray-500 group-hover:text-gray-700'
                   } ${!isMobile && !sidebarOpen ? 'mr-0' : 'mr-3'}`} />
                   <span className={`transition-opacity duration-200 ${
                     !isMobile && !sidebarOpen ? 'hidden' : 'inline'

@@ -39,7 +39,6 @@ const OrdersPage = () => {
                 calculateStats(response.data.data);
             }
         } catch (error) {
-            console.error('Error fetching orders:', error);
         } finally {
             setLoading(false);
             setIsRefreshing(false);

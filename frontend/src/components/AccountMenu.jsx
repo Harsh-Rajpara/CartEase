@@ -25,7 +25,6 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
     const handleProfileClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Profile clicked - opening modal');
         setShowProfileModal(true);
         // Don't close the menu immediately, let modal open first
         // onClose(); 
@@ -41,7 +40,6 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
             // Call the logout function from parent
             await onLogout();
         } catch (error) {
-            console.error('Logout error:', error);
         } finally {
             setIsLoggingOut(false);
         }
@@ -144,7 +142,6 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
                 <ProfileModal 
                     isOpen={showProfileModal} 
                     onClose={() => {
-                        console.log('Closing modal');
                         setShowProfileModal(false);
                     }} 
                 />

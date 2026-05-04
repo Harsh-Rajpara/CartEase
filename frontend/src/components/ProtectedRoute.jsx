@@ -8,7 +8,6 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo = '/login' }) => {
     const location = useLocation();
 
     useEffect(() => {
-  console.log("Current Route:", location.pathname);
 }, [location]);
 
     // Show loading state while checking authentication

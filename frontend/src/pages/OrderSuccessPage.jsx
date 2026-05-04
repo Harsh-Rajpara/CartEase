@@ -104,7 +104,6 @@ const OrderSuccessPage = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading invoice:', error);
-      alert('Failed to download invoice. Please try again.');
     } finally {
       setDownloading(false);
     }

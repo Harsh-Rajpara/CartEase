@@ -69,23 +69,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
                                 </div>
                             </div>
 
-                            <div className="flex items-start sm:items-center">
-                                <User className="h-4 w-4 text-gray-400 mt-0.5 sm:mt-0 flex-shrink-0" />
-                                <div className="ml-3">
-                                    <p className="text-xs text-gray-500">Gender</p>
-                                    <p className="text-sm sm:text-base font-medium text-gray-900 capitalize">{user?.gender || 'Not specified'}</p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-start sm:items-center">
-                                <Calendar className="h-4 w-4 text-gray-400 mt-0.5 sm:mt-0 flex-shrink-0" />
-                                <div className="ml-3">
-                                    <p className="text-xs text-gray-500">Date of Birth</p>
-                                    <p className="text-sm sm:text-base font-medium text-gray-900">
-                                        {user?.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : 'Not specified'}
-                                    </p>
-                                </div>
-                            </div>
+                            
                         </div>
 
                         {/* Account Type */}

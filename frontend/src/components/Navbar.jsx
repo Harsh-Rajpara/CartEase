@@ -54,7 +54,6 @@ const Navbar = () => {
     const handleProfileClick = (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Profile clicked - opening modal');
         setShowProfileModal(true);
         // Close mobile menu if open
         setIsOpen(false);
@@ -107,12 +106,12 @@ const Navbar = () => {
                                 <>
                                     {user?.role === 'seller' && (
                                         <Link to="/seller/dashboard" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
-                                            Seller Hub
+                                            Seller Dashboard
                                         </Link>
                                     )}
                                     {user?.role === 'admin' && (
                                         <Link to="/admin/dashboard" className="text-gray-700 hover:text-orange-600 transition-colors font-medium">
-                                            Admin Hub
+                                            Admin Dashboard
                                         </Link>
                                     )}
                                     
@@ -270,15 +269,7 @@ const Navbar = () => {
                                                 <span className="ml-3 text-sm font-medium">Saved Addresses</span>
                                             </Link>
 
-                                            {/* Wishlist */}
-                                            <Link 
-                                                to="/wishlist" 
-                                                className="flex items-center px-4 py-3 text-gray-700 hover:bg-orange-50 transition-colors"
-                                                onClick={() => setIsOpen(false)}
-                                            >
-                                                <Heart className="h-5 w-5 text-pink-600" />
-                                                <span className="ml-3 text-sm font-medium">Wishlist</span>
-                                            </Link>
+                                            
 
                                             {/* Seller Dashboard (if seller) */}
                                             {user?.role === 'seller' && (
@@ -362,7 +353,6 @@ const Navbar = () => {
                 <ProfileModal 
                     isOpen={showProfileModal} 
                     onClose={() => {
-                        console.log('Closing modal');
                         setShowProfileModal(false);
                     }} 
                 />

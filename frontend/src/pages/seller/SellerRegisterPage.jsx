@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import {
-  Store,
   User,
   Mail,
   Phone,
@@ -53,10 +52,7 @@ const sellerRegisterSchema = yup.object({
     .matches(/[A-Z]/, "Must contain at least one uppercase letter")
     .matches(/[a-z]/, "Must contain at least one lowercase letter")
     .matches(/[0-9]/, "Must contain at least one number")
-    .matches(
-      /[@$!%*?&]/,
-      "Must contain at least one special character (@$!%*?&)",
-    )
+    .matches(/[@$!%*?&]/, "Must contain at least one special character (@$!%*?&)")
     .required("Password is required"),
   confirmPassword: yup
     .string()
@@ -69,10 +65,7 @@ const sellerRegisterSchema = yup.object({
     .required("Business name is required"),
   businessType: yup
     .string()
-    .oneOf(
-      ["individual", "partnership", "private_limited", "public_limited", "llp"],
-      "Please select a valid business type",
-    )
+    .oneOf(["individual", "partnership", "private_limited", "public_limited", "llp"], "Please select a valid business type")
     .required("Business type is required"),
   businessAddress: yup
     .string()
@@ -106,10 +99,7 @@ const sellerRegisterSchema = yup.object({
     .required("Bank account number is required"),
   bankIfscCode: yup
     .string()
-    .matches(
-      /^[A-Z]{4}0[A-Z0-9]{6}$/,
-      "Please enter a valid IFSC code (e.g., SBIN0123456)",
-    )
+    .matches(/^[A-Z]{4}0[A-Z0-9]{6}$/, "Please enter a valid IFSC code (e.g., SBIN0123456)")
     .required("IFSC code is required"),
   bankName: yup
     .string()
@@ -120,9 +110,6 @@ const sellerRegisterSchema = yup.object({
     .max(100, "Account holder name is too long")
     .required("Account holder name is required"),
   website: yup.string().url("Please enter a valid URL").max(200, "URL is too long").nullable(),
-  acceptTerms: yup
-    .boolean()
-    .oneOf([true], "You must accept the terms and conditions"),
 });
 
 const SellerRegisterPage = () => {
@@ -155,15 +142,23 @@ const SellerRegisterPage = () => {
       bankName: "",
       accountHolderName: "",
       website: "",
-      acceptTerms: false,
     },
     validationSchema: sellerRegisterSchema,
-    validateOnChange: false,
-    validateOnBlur: false,
-    onSubmit: async (values) => {
-      await handleSellerRegistration(values);
-    },
+    validateOnChange: true,
+    validateOnBlur: true,
   });
+
+  // Clear errors for step 3 fields when entering step 3
+  useEffect(() => {
+    if (currentStep === 3) {
+      const step3Fields = ["bankAccountNumber", "bankIfscCode", "bankName", "accountHolderName"];
+      step3Fields.forEach(field => {
+        if (formik.errors[field]) {
+          formik.setFieldError(field, undefined);
+        }
+      });
+    }
+  }, [currentStep]);
 
   // Check if email or phone already exists
   const checkExistingUser = async (email, phone) => {
@@ -190,14 +185,29 @@ const SellerRegisterPage = () => {
     }
   };
 
-  const handleSellerRegistration = async (values) => {
+  const handleSellerRegistration = async () => {
+    // Get current values
+    const values = formik.values;
+    
+    // Validate ALL fields before submission
+    let hasError = false;
+    const errors = {};
+    
     try {
       await sellerRegisterSchema.validate(values, { abortEarly: false });
     } catch (err) {
       err.inner.forEach((error) => {
+        errors[error.path] = error.message;
         formik.setFieldError(error.path, error.message);
         formik.setFieldTouched(error.path, true);
       });
+      hasError = true;
+    }
+    
+    if (hasError) {
+      setTopError("Please fill all required fields correctly before submitting.");
+      // Scroll to top to show error
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
@@ -228,7 +238,6 @@ const SellerRegisterPage = () => {
       const response = await api.post("/auth/seller/register", sellerData);
 
       if (response.data.success) {
-        // No localStorage usage - using Redux only
         await dispatch(fetchUser());
         setSuccess("Registration successful! Redirecting to dashboard...");
         setTimeout(() => {
@@ -237,7 +246,7 @@ const SellerRegisterPage = () => {
       }
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Registration failed. Please try again.";
-      formik.setFieldError("password", errorMessage);
+      setTopError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -249,20 +258,17 @@ const SellerRegisterPage = () => {
     if (currentStep === 1) {
       const step1Fields = ["fullName", "email", "phone", "password", "confirmPassword"];
 
-      step1Fields.forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
-
       let hasError = false;
-      step1Fields.forEach((field) => {
+      for (const field of step1Fields) {
         try {
-          sellerRegisterSchema.validateSyncAt(field, formik.values);
+          await sellerRegisterSchema.validateAt(field, formik.values);
           formik.setFieldError(field, "");
         } catch (err) {
           formik.setFieldError(field, err.message);
+          formik.setFieldTouched(field, true);
           hasError = true;
         }
-      });
+      }
 
       if (hasError) return;
 
@@ -292,45 +298,18 @@ const SellerRegisterPage = () => {
         "gstin",
         "panNumber",
       ];
-      step2Fields.forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
 
       let hasError = false;
-      step2Fields.forEach((field) => {
+      for (const field of step2Fields) {
         try {
-          sellerRegisterSchema.validateSyncAt(field, formik.values);
+          await sellerRegisterSchema.validateAt(field, formik.values);
           formik.setFieldError(field, "");
         } catch (err) {
           formik.setFieldError(field, err.message);
+          formik.setFieldTouched(field, true);
           hasError = true;
         }
-      });
-      if (hasError) return;
-    }
-
-    if (currentStep === 3) {
-      const step3Fields = [
-        "bankAccountNumber",
-        "bankIfscCode",
-        "bankName",
-        "accountHolderName",
-        "acceptTerms",
-      ];
-      step3Fields.forEach((field) => {
-        formik.setFieldTouched(field, true);
-      });
-
-      let hasError = false;
-      step3Fields.forEach((field) => {
-        try {
-          sellerRegisterSchema.validateSyncAt(field, formik.values);
-          formik.setFieldError(field, "");
-        } catch (err) {
-          formik.setFieldError(field, err.message);
-          hasError = true;
-        }
-      });
+      }
       if (hasError) return;
     }
 
@@ -340,6 +319,18 @@ const SellerRegisterPage = () => {
   const prevStep = () => {
     setTopError("");
     setCurrentStep(currentStep - 1);
+  };
+
+  // Helper function to check if a field should show error
+  const shouldShowError = (fieldName) => {
+    const step1Fields = ["fullName", "email", "phone", "password", "confirmPassword"];
+    const step2Fields = ["businessName", "businessType", "businessAddress", "city", "state", "pincode", "gstin", "panNumber"];
+    const step3Fields = ["bankAccountNumber", "bankIfscCode", "bankName", "accountHolderName"];
+    
+    if (currentStep === 1) return step1Fields.includes(fieldName);
+    if (currentStep === 2) return step2Fields.includes(fieldName);
+    if (currentStep === 3) return step3Fields.includes(fieldName);
+    return false;
   };
 
   // Responsive Step Indicator
@@ -488,11 +479,11 @@ const SellerRegisterPage = () => {
 
           {/* Top Error Message */}
           {topError && (
-            <div className="mb-6 bg-orange-50 border border-orange-200 rounded-lg p-4">
+            <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
               <div className="flex">
-                <AlertCircle className="h-5 w-5 text-orange-600" />
+                <AlertCircle className="h-5 w-5 text-red-600" />
                 <div className="ml-3">
-                  <p className="text-sm text-orange-800">{topError}</p>
+                  <p className="text-sm text-red-800">{topError}</p>
                 </div>
               </div>
             </div>
@@ -509,7 +500,14 @@ const SellerRegisterPage = () => {
             </div>
           )}
 
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            if (currentStep === 3) {
+              handleSellerRegistration();
+            } else {
+              nextStep();
+            }
+          }}>
             {currentStep === 1 && (
               <div className="space-y-5 sm:space-y-6">
                 <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
@@ -530,15 +528,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={50}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.fullName && formik.touched.fullName
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.fullName && formik.touched.fullName && shouldShowError("fullName")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter your full name"
                     />
                   </div>
-                  {formik.errors.fullName && formik.touched.fullName && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("fullName") && formik.errors.fullName && formik.touched.fullName && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.fullName}
                     </p>
                   )}
@@ -558,15 +556,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={100}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.email && formik.touched.email
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.email && formik.touched.email && shouldShowError("email")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter your email"
                     />
                   </div>
-                  {formik.errors.email && formik.touched.email && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("email") && formik.errors.email && formik.touched.email && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.email}
                     </p>
                   )}
@@ -586,15 +584,15 @@ const SellerRegisterPage = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.phone && formik.touched.phone
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.phone && formik.touched.phone && shouldShowError("phone")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter 10-digit mobile number"
                     />
                   </div>
-                  {formik.errors.phone && formik.touched.phone && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("phone") && formik.errors.phone && formik.touched.phone && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.phone}
                     </p>
                   )}
@@ -614,10 +612,10 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={50}
                       className={`block w-full pl-10 pr-10 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.password && formik.touched.password
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.password && formik.touched.password && shouldShowError("password")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Create a password"
                     />
                     <button
@@ -632,8 +630,8 @@ const SellerRegisterPage = () => {
                       )}
                     </button>
                   </div>
-                  {formik.errors.password && formik.touched.password && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("password") && formik.errors.password && formik.touched.password && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.password}
                     </p>
                   )}
@@ -653,10 +651,10 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={50}
                       className={`block w-full pl-10 pr-10 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.confirmPassword && formik.touched.confirmPassword
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.confirmPassword && formik.touched.confirmPassword && shouldShowError("confirmPassword")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Confirm your password"
                     />
                     <button
@@ -671,8 +669,8 @@ const SellerRegisterPage = () => {
                       )}
                     </button>
                   </div>
-                  {formik.errors.confirmPassword && formik.touched.confirmPassword && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("confirmPassword") && formik.errors.confirmPassword && formik.touched.confirmPassword && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.confirmPassword}
                     </p>
                   )}
@@ -683,49 +681,19 @@ const SellerRegisterPage = () => {
                     Password must contain:
                   </p>
                   <ul className="text-xs space-y-1">
-                    <li
-                      className={
-                        formik.values.password.length >= 6
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }
-                    >
+                    <li className={formik.values.password.length >= 6 ? "text-green-600" : "text-gray-500"}>
                       ✓ At least 6 characters
                     </li>
-                    <li
-                      className={
-                        /[A-Z]/.test(formik.values.password)
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }
-                    >
+                    <li className={/[A-Z]/.test(formik.values.password) ? "text-green-600" : "text-gray-500"}>
                       ✓ One uppercase letter
                     </li>
-                    <li
-                      className={
-                        /[a-z]/.test(formik.values.password)
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }
-                    >
+                    <li className={/[a-z]/.test(formik.values.password) ? "text-green-600" : "text-gray-500"}>
                       ✓ One lowercase letter
                     </li>
-                    <li
-                      className={
-                        /[0-9]/.test(formik.values.password)
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }
-                    >
+                    <li className={/[0-9]/.test(formik.values.password) ? "text-green-600" : "text-gray-500"}>
                       ✓ One number
                     </li>
-                    <li
-                      className={
-                        /[@$!%*?&]/.test(formik.values.password)
-                          ? "text-green-600"
-                          : "text-gray-500"
-                      }
-                    >
+                    <li className={/[@$!%*?&]/.test(formik.values.password) ? "text-green-600" : "text-gray-500"}>
                       ✓ One special character (@$!%*?&)
                     </li>
                   </ul>
@@ -753,15 +721,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={100}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.businessName && formik.touched.businessName
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.businessName && formik.touched.businessName && shouldShowError("businessName")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter your business name"
                     />
                   </div>
-                  {formik.errors.businessName && formik.touched.businessName && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("businessName") && formik.errors.businessName && formik.touched.businessName && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.businessName}
                     </p>
                   )}
@@ -779,10 +747,10 @@ const SellerRegisterPage = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.businessType && formik.touched.businessType
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200 bg-white`}
+                        formik.errors.businessType && formik.touched.businessType && shouldShowError("businessType")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200 bg-white`}
                     >
                       <option value="">Select business type</option>
                       <option value="individual">Individual / Sole Proprietor</option>
@@ -792,8 +760,8 @@ const SellerRegisterPage = () => {
                       <option value="llp">LLP</option>
                     </select>
                   </div>
-                  {formik.errors.businessType && formik.touched.businessType && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("businessType") && formik.errors.businessType && formik.touched.businessType && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.businessType}
                     </p>
                   )}
@@ -813,15 +781,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={500}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.businessAddress && formik.touched.businessAddress
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.businessAddress && formik.touched.businessAddress && shouldShowError("businessAddress")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter complete business address"
                     />
                   </div>
-                  {formik.errors.businessAddress && formik.touched.businessAddress && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("businessAddress") && formik.errors.businessAddress && formik.touched.businessAddress && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.businessAddress}
                     </p>
                   )}
@@ -840,16 +808,14 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={50}
                       className={`mt-1 block w-full px-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.city && formik.touched.city
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.city && formik.touched.city && shouldShowError("city")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="City"
                     />
-                    {formik.errors.city && formik.touched.city && (
-                      <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                        {formik.errors.city}
-                      </p>
+                    {shouldShowError("city") && formik.errors.city && formik.touched.city && (
+                      <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.city}</p>
                     )}
                   </div>
                   <div>
@@ -864,16 +830,14 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={50}
                       className={`mt-1 block w-full px-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.state && formik.touched.state
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.state && formik.touched.state && shouldShowError("state")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="State"
                     />
-                    {formik.errors.state && formik.touched.state && (
-                      <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                        {formik.errors.state}
-                      </p>
+                    {shouldShowError("state") && formik.errors.state && formik.touched.state && (
+                      <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.state}</p>
                     )}
                   </div>
                   <div>
@@ -888,16 +852,14 @@ const SellerRegisterPage = () => {
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       className={`mt-1 block w-full px-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.pincode && formik.touched.pincode
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.pincode && formik.touched.pincode && shouldShowError("pincode")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="6-digit pincode"
                     />
-                    {formik.errors.pincode && formik.touched.pincode && (
-                      <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                        {formik.errors.pincode}
-                      </p>
+                    {shouldShowError("pincode") && formik.errors.pincode && formik.touched.pincode && (
+                      <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.pincode}</p>
                     )}
                   </div>
                 </div>
@@ -917,17 +879,15 @@ const SellerRegisterPage = () => {
                         onBlur={formik.handleBlur}
                         maxLength={15}
                         className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                          formik.errors.gstin && formik.touched.gstin
-                            ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                            : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                        } rounded-lg focus:outline-none transition-all duration-200`}
+                          formik.errors.gstin && formik.touched.gstin && shouldShowError("gstin")
+                            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                        } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                         placeholder="15-digit GSTIN"
                       />
                     </div>
-                    {formik.errors.gstin && formik.touched.gstin && (
-                      <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                        {formik.errors.gstin}
-                      </p>
+                    {shouldShowError("gstin") && formik.errors.gstin && formik.touched.gstin && (
+                      <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.gstin}</p>
                     )}
                   </div>
                   <div>
@@ -944,17 +904,15 @@ const SellerRegisterPage = () => {
                         onBlur={formik.handleBlur}
                         maxLength={10}
                         className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                          formik.errors.panNumber && formik.touched.panNumber
-                            ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                            : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                        } rounded-lg focus:outline-none transition-all duration-200`}
+                          formik.errors.panNumber && formik.touched.panNumber && shouldShowError("panNumber")
+                            ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                            : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                        } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                         placeholder="10-digit PAN"
                       />
                     </div>
-                    {formik.errors.panNumber && formik.touched.panNumber && (
-                      <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                        {formik.errors.panNumber}
-                      </p>
+                    {shouldShowError("panNumber") && formik.errors.panNumber && formik.touched.panNumber && (
+                      <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.panNumber}</p>
                     )}
                   </div>
                 </div>
@@ -973,17 +931,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={200}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.website && formik.touched.website
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.website && formik.touched.website && shouldShowError("website")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="https://www.example.com"
                     />
                   </div>
-                  {formik.errors.website && formik.touched.website && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
-                      {formik.errors.website}
-                    </p>
+                  {shouldShowError("website") && formik.errors.website && formik.touched.website && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">{formik.errors.website}</p>
                   )}
                 </div>
               </div>
@@ -1009,15 +965,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={18}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.bankAccountNumber && formik.touched.bankAccountNumber
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.bankAccountNumber && formik.touched.bankAccountNumber && shouldShowError("bankAccountNumber")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter account number"
                     />
                   </div>
-                  {formik.errors.bankAccountNumber && formik.touched.bankAccountNumber && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("bankAccountNumber") && formik.errors.bankAccountNumber && formik.touched.bankAccountNumber && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.bankAccountNumber}
                     </p>
                   )}
@@ -1037,15 +993,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={11}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.bankIfscCode && formik.touched.bankIfscCode
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.bankIfscCode && formik.touched.bankIfscCode && shouldShowError("bankIfscCode")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter IFSC code"
                     />
                   </div>
-                  {formik.errors.bankIfscCode && formik.touched.bankIfscCode && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("bankIfscCode") && formik.errors.bankIfscCode && formik.touched.bankIfscCode && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.bankIfscCode}
                     </p>
                   )}
@@ -1065,15 +1021,15 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={100}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.bankName && formik.touched.bankName
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.bankName && formik.touched.bankName && shouldShowError("bankName")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter bank name"
                     />
                   </div>
-                  {formik.errors.bankName && formik.touched.bankName && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("bankName") && formik.errors.bankName && formik.touched.bankName && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.bankName}
                     </p>
                   )}
@@ -1093,47 +1049,18 @@ const SellerRegisterPage = () => {
                       onBlur={formik.handleBlur}
                       maxLength={100}
                       className={`block w-full pl-10 pr-3 py-2.5 text-sm sm:text-base border ${
-                        formik.errors.accountHolderName && formik.touched.accountHolderName
-                          ? "border-orange-400 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                          : "border-gray-300 focus:ring-1 focus:ring-orange-400 focus:border-orange-400"
-                      } rounded-lg focus:outline-none transition-all duration-200`}
+                        formik.errors.accountHolderName && formik.touched.accountHolderName && shouldShowError("accountHolderName")
+                          ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-orange-500 focus:border-orange-500"
+                      } rounded-lg focus:outline-none focus:ring-1 transition-all duration-200`}
                       placeholder="Enter account holder name"
                     />
                   </div>
-                  {formik.errors.accountHolderName && formik.touched.accountHolderName && (
-                    <p className="mt-1.5 text-xs sm:text-sm text-orange-600">
+                  {shouldShowError("accountHolderName") && formik.errors.accountHolderName && formik.touched.accountHolderName && (
+                    <p className="mt-1.5 text-xs sm:text-sm text-red-600">
                       {formik.errors.accountHolderName}
                     </p>
                   )}
-                </div>
-
-                <div className="flex items-start">
-                  <div className="flex items-center h-5">
-                    <input
-                      id="acceptTerms"
-                      name="acceptTerms"
-                      type="checkbox"
-                      checked={formik.values.acceptTerms}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
-                    />
-                  </div>
-                  <div className="ml-3 text-sm">
-                    <label htmlFor="acceptTerms" className="font-medium text-gray-700">
-                      I accept the{" "}
-                      <a href="#" className="text-orange-600 hover:text-orange-500">
-                        Terms and Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a href="#" className="text-orange-600 hover:text-orange-500">
-                        Seller Policy
-                      </a>
-                    </label>
-                    {formik.errors.acceptTerms && formik.touched.acceptTerms && (
-                      <p className="mt-1 text-orange-600 text-xs">{formik.errors.acceptTerms}</p>
-                    )}
-                  </div>
                 </div>
               </div>
             )}
@@ -1152,11 +1079,38 @@ const SellerRegisterPage = () => {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className={`px-4 sm:px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200 ${
+                  disabled={loading}
+                  className={`px-4 sm:px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
                     currentStep === 1 ? "ml-auto" : ""
                   }`}
                 >
-                  Next
+                  {loading ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Checking...
+                    </span>
+                  ) : (
+                    "Next"
+                  )}
                 </button>
               ) : (
                 <button
