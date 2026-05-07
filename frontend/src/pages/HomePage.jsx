@@ -262,11 +262,11 @@ const HomePage = () => {
             [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
           
-          const displayProducts = shuffled.slice(0, 12);
+          const displayProducts = shuffled.slice(0, 18);
           
-          setFeaturedProducts(displayProducts.slice(0, 4));
-          setTopRated(displayProducts.slice(4, 8));
-          setNewArrivals(displayProducts.slice(8, 12));
+          setFeaturedProducts(displayProducts.slice(0, 6));
+          setTopRated(displayProducts.slice(6, 12));
+          setNewArrivals(displayProducts.slice(12, 18));
         } else {
           setFeaturedProducts([]);
           setTopRated([]);
@@ -495,13 +495,13 @@ const HomePage = () => {
               ))}
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6">
               {topRated.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}
             </div>
             
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6">
               {newArrivals.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}
