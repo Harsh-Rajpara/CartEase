@@ -11,7 +11,7 @@ const orderService = {
         }
     },
     
-    // Get my orders (for user)
+    // Get my orders 
     getMyOrders: async () => {
         try {
             const response = await api.get('/orders/my-orders');
@@ -31,7 +31,7 @@ const orderService = {
         }
     },
     
-    // Cancel order (user)
+    // Cancel order 
     cancelOrder: async (orderId, reason) => {
         try {
             const response = await api.put(`/orders/${orderId}/cancel`, { reason });

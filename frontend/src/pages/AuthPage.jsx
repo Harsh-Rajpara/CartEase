@@ -83,7 +83,7 @@ const AuthPage = () => {
         />
       )}
 
-      {/* Create New Account Link */}
+      {/* Create New Account  */}
       <div className="mt-6">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
@@ -106,7 +106,7 @@ const AuthPage = () => {
         </div>
       </div>
 
-      {/* Seller Registration Link */}
+      {/* Seller Registration  */}
       <div className="mt-4 text-center">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

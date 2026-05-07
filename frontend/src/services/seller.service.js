@@ -94,10 +94,9 @@ const sellerService = {
         }
     },
 
-    // ✅ Get seller products - CORRECT PATH
+    // Get seller products
     getSellerProducts: async () => {
         try {
-            // From productRoutes.js: router.get('/seller/products', ...)
             const response = await api.get('/products/seller/products');
             console.log('Seller products response:', response.data);
             return response.data;
@@ -107,10 +106,9 @@ const sellerService = {
         }
     },
 
-    // ✅ Update only stock - CORRECT PATH
+    // Update only stock
     updateProductStock: async (productId, stockData) => {
         try {
-            // From productRoutes.js: router.patch('/:productId/stock', ...)
             const response = await api.patch(`/products/${productId}/stock`, stockData);
             return response.data;
         } catch (error) {
@@ -119,10 +117,9 @@ const sellerService = {
         }
     },
 
-    // ✅ Update full product - CORRECT PATH
+    // Update full product
     updateProduct: async (productId, productData) => {
         try {
-            // From productRoutes.js: router.put('/:id', ...)
             const response = await api.put(`/products/${productId}`, productData);
             return response.data;
         } catch (error) {
@@ -131,10 +128,9 @@ const sellerService = {
         }
     },
 
-    // ✅ Delete product - CORRECT PATH
+    //  Delete product
     deleteProduct: async (productId) => {
         try {
-            // From productRoutes.js: router.delete('/:id', ...)
             const response = await api.delete(`/products/${productId}`);
             return response.data;
         } catch (error) {

@@ -1,4 +1,3 @@
-// components/admin/Orders.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   ShoppingBag, 

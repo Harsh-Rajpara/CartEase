@@ -12,7 +12,6 @@ exports.registerUser = async (req, res) => {
     try {
         const { fullName, email, phone, password, role } = req.body;
 
-        // Check if user exists with either email OR phone
         const checkExist = await User.findOne({
             $or: [
                 { email: email?.toLowerCase() },
@@ -28,10 +27,8 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        // Hash password
         const hashPassword = await bcrypt.hash(password, 11);
 
-        // Create user
         const newUser = await User.create({
             fullName,
             email: email?.toLowerCase(),
@@ -40,7 +37,6 @@ exports.registerUser = async (req, res) => {
             role: role || 'user'
         });
 
-        // Generate tokens
         const accessToken = jwt.sign(
             { id: newUser._id }, 
             process.env.ACCESS_TOKEN_SECRET, 
@@ -53,29 +49,26 @@ exports.registerUser = async (req, res) => {
             { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '7d' }
         );
 
-        // Save refresh token to user
         newUser.refreshToken = refreshToken;
         await newUser.save();
 
-        // Remove sensitive data
         const userObj = newUser.toObject();
         delete userObj.password;
         delete userObj.refreshToken;
         delete userObj.__v;
 
-        // Set cookies and send response
         res
             .cookie("accessToken", accessToken, { 
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === "production",
                 sameSite: 'strict',
-                maxAge: 15 * 60 * 1000 // 15 minutes
+                maxAge: 15 * 60 * 1000 
             })
             .cookie("refreshToken", refreshToken, { 
                 httpOnly: true, 
                 secure: process.env.NODE_ENV === "production",
                 sameSite: 'strict',
-                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+                maxAge: 7 * 24 * 60 * 60 * 1000 
             })
             .status(201)
             .json({ 
@@ -93,8 +86,8 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-// Login user (supports email OR phone)
-//  POST /api/auth/login
+// Login user 
+// POST /api/auth/login
 exports.loginUser = async (req, res) => {
     try {
         const { identifier, password } = req.body;
@@ -108,20 +101,16 @@ exports.loginUser = async (req, res) => {
             query.phone = identifier;
         }
 
-        // 🔥 STEP 1: Check User
         let account = await User.findOne(query).select("+password +refreshToken");
         let role;
 
         if (account) {
-        role = account.role; // ✅ admin रहेगा
+        role = account.role; 
 }
-        // 🔥 STEP 2: If not user → check Seller
         if (!account) {
             account = await Seller.findOne(query).select("+password +refreshToken");
             role = "seller";
         }
-console.log("Account:", account);
-        // ❌ If not found in both
         if (!account) {
             return res.status(401).json({
                 success: false,
@@ -129,7 +118,6 @@ console.log("Account:", account);
             });
         }
 
-        // 🔐 Compare password
         const isMatch = await bcrypt.compare(password, account.password);
 
         if (!isMatch) {
@@ -139,7 +127,6 @@ console.log("Account:", account);
             });
         }
 
-        // 🎯 Generate tokens (include role)
         const accessToken = jwt.sign(
             { id: account._id, role },
             process.env.ACCESS_TOKEN_SECRET,
@@ -152,11 +139,9 @@ console.log("Account:", account);
             { expiresIn: process.env.REFRESH_TOKEN_EXPIRY || '7d' }
         );
 
-        // Save refresh token
         account.refreshToken = refreshToken;
         await account.save();
 
-        // Remove sensitive data
         const userObj = account.toObject();
         delete userObj.password;
         delete userObj.refreshToken;
@@ -178,7 +163,7 @@ console.log("Account:", account);
             .status(200)
             .json({
                 success: true,
-                data: { ...userObj, role }, // 👈 include role
+                data: { ...userObj, role }, 
                 message: `${role} login successful`
             });
 
@@ -200,7 +185,6 @@ exports.registerSeller = async (req, res) => {
             website 
         } = req.body;
 
-        // Validate ALL required fields
         const requiredFields = {
             fullName: "Full name",
             email: "Email address",
@@ -220,7 +204,6 @@ exports.registerSeller = async (req, res) => {
             accountHolderName: "Account holder name"
         };
         
-        // Check for missing fields
         const missingFields = [];
         for (const [field, label] of Object.entries(requiredFields)) {
             if (!req.body[field] || req.body[field].trim() === '') {
@@ -236,7 +219,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate email format
         const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
         if (!emailRegex.test(email)) {
             return res.status(400).json({ 
@@ -246,7 +228,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate phone number (Indian format)
         const phoneRegex = /^[6-9]\d{9}$/;
         if (!phoneRegex.test(phone)) {
             return res.status(400).json({ 
@@ -256,7 +237,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate password strength
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
         if (!passwordRegex.test(password)) {
             return res.status(400).json({ 
@@ -266,7 +246,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate pincode
         const pincodeRegex = /^[1-9][0-9]{5}$/;
         if (!pincodeRegex.test(pincode)) {
             return res.status(400).json({ 
@@ -276,7 +255,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate GSTIN format
         const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
         if (!gstRegex.test(gstin.toUpperCase())) {
             return res.status(400).json({ 
@@ -286,7 +264,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate PAN format
         const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
         if (!panRegex.test(panNumber.toUpperCase())) {
             return res.status(400).json({ 
@@ -296,7 +273,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate IFSC code
         const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
         if (!ifscRegex.test(bankIfscCode.toUpperCase())) {
             return res.status(400).json({ 
@@ -306,7 +282,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Validate bank account number (at least 9 digits)
         if (!bankAccountNumber || bankAccountNumber.length < 9 || bankAccountNumber.length > 18) {
             return res.status(400).json({ 
                 success: false, 
@@ -315,7 +290,6 @@ exports.registerSeller = async (req, res) => {
             });
         }
 
-        // Check if seller already exists with email or phone
         const checkExist = await Seller.findOne({
             $or: [{ email: email.toLowerCase() }, { phone }]
         });
@@ -341,7 +315,6 @@ exports.registerSeller = async (req, res) => {
         }
         const hashPassword = await bcrypt.hash(password, 11);
 
-        // Create seller with all fields
         const newSeller = await Seller.create({
             fullName: fullName.trim(),
             email: email.toLowerCase().trim(),
@@ -382,14 +355,12 @@ const refreshToken = jwt.sign(
         newSeller.refreshToken = refreshToken;
         await newSeller.save();
 
-        // Remove sensitive data from response
         const sellerObj = newSeller.toObject();
         delete sellerObj.password;
         delete sellerObj.refreshToken;
         delete sellerObj.__v;
         delete sellerObj.documents;
         
-        // Remove bank account number and IFSC from response for security
         if (sellerObj.bankDetails) {
             delete sellerObj.bankDetails.accountNumber;
             delete sellerObj.bankDetails.ifscCode;
@@ -419,7 +390,6 @@ const refreshToken = jwt.sign(
     } catch (error) {
         console.error("Seller registration error:", error);
         
-        // Handle duplicate key error
         if (error.code === 11000) {
             const field = Object.keys(error.keyPattern)[0];
             return res.status(400).json({ 
@@ -473,7 +443,6 @@ exports.sendOTP = async (req, res) => {
             });
         }
 
-        // Check for recent OTP (within last minute)
         const recentOtp = await Otp.findOne({
             ...(isEmail ? { email: identifier.toLowerCase() } : { phone: identifier }),
             purpose: 'login',
@@ -488,10 +457,8 @@ exports.sendOTP = async (req, res) => {
             });
         }
 
-        // Generate numeric OTP
-        const otp = otpService.generateSimpleOTP(); // Use simple numeric generator
+        const otp = otpService.generateSimpleOTP(); 
 
-        // Save OTP to database
         const otpData = {
             otp,
             purpose: 'login',
@@ -506,19 +473,17 @@ exports.sendOTP = async (req, res) => {
 
         await Otp.create(otpData);
 
-        // Send OTP
         if (isEmail) {
             await otpService.sendOTPByEmail(identifier, otp);
         } else {
             await otpService.sendOTPBySMS(identifier, otp);
 
-            // Return OTP in response for phone numbers (development)
             return res.status(200).json({
                 success: true,
                 data: {
                     identifier: identifier,
                     type: 'phone',
-                    otp: otp  // ← This will show OTP on frontend
+                    otp: otp  
                 },
                 message: `OTP sent to your phone number. Your OTP is: ${otp}`
             });
@@ -543,7 +508,6 @@ exports.sendOTP = async (req, res) => {
     }
 };
 
-// Verify OTP and login
 // POST /api/auth/verify-otp
 exports.verifyOTP = async (req, res) => {
     try {
@@ -559,7 +523,6 @@ exports.verifyOTP = async (req, res) => {
 
         const isEmail = identifier.includes('@');
         
-        // Find OTP in database
         let otpRecord = null;
         if (isEmail) {
             otpRecord = await Otp.findOne({
@@ -587,11 +550,9 @@ exports.verifyOTP = async (req, res) => {
             });
         }
 
-        // Mark OTP as used
         otpRecord.isUsed = true;
         await otpRecord.save();
 
-        // Find user
         let user = null;
         let role = '';
         
@@ -619,8 +580,6 @@ exports.verifyOTP = async (req, res) => {
             });
         }
 
-        // Generate tokens
-         // 🎯 Generate tokens (include role)
         const accessToken = jwt.sign(
             { id: user._id, role },
             process.env.ACCESS_TOKEN_SECRET,
@@ -635,7 +594,6 @@ exports.verifyOTP = async (req, res) => {
         user.refreshToken = refreshToken;
         await user.save();
 
-        // Remove sensitive data
         const userObj = user.toObject();
         delete userObj.password;
         delete userObj.refreshToken;
@@ -646,7 +604,6 @@ exports.verifyOTP = async (req, res) => {
             delete userObj.bankDetails.ifscCode;
         }
 
-        // Set cookies
         res
             .cookie("accessToken", accessToken, { 
                 httpOnly: true, 
@@ -755,13 +712,12 @@ exports.resendOTP = async (req, res) => {
         } else {
             await otpService.sendOTPBySMS(identifier, otp);
 
-            // Return OTP for phone numbers
             return res.status(200).json({
                 success: true,
                 data: {
                     identifier: identifier,
                     type: 'phone',
-                    otp: otp  // ← Return OTP for frontend
+                    otp: otp  
                 },
             });
         }
@@ -791,7 +747,6 @@ exports.getCurrentUser = async (req, res) => {
     try {
         let userData;
         
-        // Check role from token (attached by protect middleware)
         if (req.user.role === 'seller') {
             // Get seller data
             userData = await Seller.findById(req.user.id)
@@ -804,12 +759,10 @@ exports.getCurrentUser = async (req, res) => {
                 });
             }
             
-            // Add role to response
             userData = userData.toObject();
             userData.role = 'seller';
             console.log("userdata ", userData);
         } else if (req.user.role === 'admin') {
-            // Get admin data (from User model)
             userData = await User.findById(req.user.id)
                 .select('-password -refreshToken -__v');
             
@@ -825,7 +778,6 @@ exports.getCurrentUser = async (req, res) => {
                         console.log("quserdata ", userData);
 
         } else {
-            // Get regular user data
             userData = await User.findById(req.user.id)
                 .select('-password -refreshToken -__v');
             
@@ -839,7 +791,6 @@ exports.getCurrentUser = async (req, res) => {
             userData = userData.toObject();
             userData.role = 'user';
         }
-                    console.log("suserdata ", userData);
 
         res.status(200).json({
             success: true,
@@ -859,7 +810,6 @@ exports.getCurrentUser = async (req, res) => {
 
 exports.logout = async (req, res) => {
     try {
-        // 🔥 1. Remove refresh token from DB (VERY IMPORTANT)
         const userId = req.user?.id;
 
         if (userId) {
@@ -870,7 +820,6 @@ exports.logout = async (req, res) => {
             await Seller.findByIdAndUpdate(userId, { refreshToken: null });
         }
 
-        // 🔥 2. Clear cookies
         res.clearCookie("accessToken", {
             httpOnly: true,
             sameSite: "None",
@@ -883,7 +832,6 @@ exports.logout = async (req, res) => {
             secure: true
         });
 
-        // 🔥 3. Send response
         res.status(200).json({
             success: true,
             message: "Logged out successfully"
@@ -897,9 +845,7 @@ exports.logout = async (req, res) => {
     }
 };
 
-// @desc    Check if email exists
-// @route   POST /api/auth/check-email
-// @access  Public
+// POST /api/auth/check-email
 exports.checkEmail = async (req, res) => {
     try {
         const { email } = req.body;
@@ -912,10 +858,8 @@ exports.checkEmail = async (req, res) => {
             });
         }
         
-        // Check in User collection
         const userExists = await User.findOne({ email: email.toLowerCase() });
         
-        // Check in Seller collection
         const sellerExists = await Seller.findOne({ email: email.toLowerCase() });
         
         const exists = !!(userExists || sellerExists);
@@ -930,9 +874,7 @@ exports.checkEmail = async (req, res) => {
     }
 };
 
-// @desc    Check if phone exists
-// @route   POST /api/auth/check-phone
-// @access  Public
+// POST /api/auth/check-phone
 exports.checkPhone = async (req, res) => {
     try {
         const { phone } = req.body;

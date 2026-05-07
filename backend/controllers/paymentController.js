@@ -20,7 +20,6 @@ exports.verifyPayment = async (req, res) => {
             });
         }
 
-        // Verify signature
         const body = razorpayOrderId + "|" + paymentId;
         const expectedSignature = crypto
             .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -30,12 +29,11 @@ exports.verifyPayment = async (req, res) => {
         const isAuthentic = expectedSignature === signature;
 
         if (isAuthentic) {
-            // Update order status - USING VALID STATUS VALUES
             order.paymentStatus = 'completed';
-            order.orderStatus = 'confirmed'; // ✅ VALID: 'confirmed'
+            order.orderStatus = 'confirmed'; 
             order.paymentId = paymentId;
             order.statusHistory.push({
-                status: 'confirmed', // ✅ VALID: 'confirmed'
+                status: 'confirmed',
                 comment: 'Payment received and order confirmed',
                 updatedBy: req.user.id
             });
@@ -53,7 +51,7 @@ exports.verifyPayment = async (req, res) => {
         } else {
             order.paymentStatus = 'failed';
             order.statusHistory.push({
-                status: 'ordered', // ✅ Keep as 'ordered' since payment failed
+                status: 'ordered', 
                 comment: 'Payment verification failed',
                 updatedBy: req.user.id
             });

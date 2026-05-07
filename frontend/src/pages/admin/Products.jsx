@@ -1,4 +1,3 @@
-// components/admin/Products.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   Package, 

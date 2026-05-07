@@ -1,6 +1,3 @@
-
-
-// frontend/src/components/admin/AdminLayout.jsx
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useLocation, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -90,7 +87,6 @@ const AdminLayout = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  // Get active tab name for header
   const activeTabName = navigation.find(item => item.id === activeTab)?.name || 'Dashboard';
 
   return (
@@ -183,7 +179,7 @@ const AdminLayout = () => {
           )}
         </div>
 
-        {/* Navigation - Using Link for proper routing */}
+        {/* Navigation  */}
         <nav className="mt-6 px-3 space-y-1">
           {navigation.map((item) => {
             const isActive = activeTab === item.id;

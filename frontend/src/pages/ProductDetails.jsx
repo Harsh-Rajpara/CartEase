@@ -55,11 +55,9 @@ const ProductDetails = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showImageModal, setShowImageModal] = useState(false);
 
-  // Related products state
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [relatedLoading, setRelatedLoading] = useState(false);
 
-  // Address related states
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [userAddresses, setUserAddresses] = useState([]);
   const [checkingAddress, setCheckingAddress] = useState(false);
@@ -445,7 +443,6 @@ const ProductDetails = () => {
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
-        {/* Breadcrumb - Responsive */}
         <nav className="mb-4 sm:mb-6 overflow-x-auto">
           <ol className="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm whitespace-nowrap">
             <li>
@@ -472,10 +469,9 @@ const ProductDetails = () => {
           </ol>
         </nav>
 
-        {/* Product Main Section - Responsive Grid */}
+        {/* Product Main Section */}
         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden mb-6 sm:mb-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 p-4 sm:p-6 lg:p-8">
-            {/* Left - Image Gallery - Mobile Optimized */}
             <div>
               <div
                 className=" rounded-xl overflow-hidden cursor-pointer"
@@ -492,7 +488,6 @@ const ProductDetails = () => {
                 />
               </div>
 
-              {/* Thumbnails - Horizontal Scroll on Mobile */}
               {product.images && product.images.length > 1 && (
                 <div className="flex gap-2 mt-3 sm:mt-4 overflow-x-auto pb-2 scrollbar-thin">
                   {product.images.map((img, index) => (
@@ -515,7 +510,7 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              {/* Delivery Info Card - Responsive Grid */}
+              {/* Delivery Info Card */}
               <div className="mt-4 sm:mt-6 bg-gray-50 rounded-xl p-3 sm:p-4">
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 text-center">
                   <div>
@@ -543,7 +538,7 @@ const ProductDetails = () => {
               </div>
             </div>
 
-            {/* Right - Product Info - Responsive Typography */}
+            {/* Product Info */}
             <div className="space-y-4 sm:space-y-5">
               <div>
                 {product.brand && (
@@ -603,7 +598,7 @@ const ProductDetails = () => {
                 </p>
               </div>
 
-              {/* Variants - Responsive */}
+              {/* Variants */}
               {hasVariants() && (
                 <div className="space-y-3">
                   {variants.map((variant) => (
@@ -689,7 +684,7 @@ const ProductDetails = () => {
                 </div>
               )}
 
-              {/* Action Buttons - Responsive (Stack on mobile) */}
+              {/* Action Buttons - Responsive*/}
               {currentStock > 0 && (
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <button
@@ -721,7 +716,6 @@ const ProductDetails = () => {
                 </span>
               </div>
 
-              {/* All Details Section */}
                             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mt-8">
                               <div className="border-b px-6 py-4">
                                 <div className="flex items-center justify-between">
@@ -827,7 +821,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Related Products Section - Responsive Grid */}
+        {/* Related Products Section  */}
         {relatedProducts.length > 0 && (
           <div className="mt-8 sm:mt-12 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 sm:mb-6">

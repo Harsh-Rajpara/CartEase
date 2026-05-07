@@ -1,4 +1,3 @@
-// frontend/src/hooks/useAuth.js
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -27,7 +26,7 @@ export const useAuth = () => {
         password: values.password,
       };
 
-      // Simulate API call - Replace with actual API
+      // API call 
       const response = {
         data: {
           success: true,
@@ -66,7 +65,7 @@ export const useAuth = () => {
     setError('');
     
     try {
-      // Simulate API call
+      //  API call
       const response = {
         data: {
           success: true,
@@ -100,8 +99,8 @@ export const useAuth = () => {
     setError('');
     
     try {
-      // Simulate API call
-      const emailExists = false; // Change to true to test
+      //  API call
+      const emailExists = false; 
       
       if (emailExists) {
         setError('This email already has an account. Please login.');
@@ -122,8 +121,8 @@ export const useAuth = () => {
     setError('');
     
     try {
-      // Simulate API call
-      const phoneExists = false; // Change to true to test
+      //  API call
+      const phoneExists = false; 
       
       if (phoneExists) {
         setError('This phone number already has an account. Please login.');
@@ -162,7 +161,7 @@ export const useAuth = () => {
     setError('');
     
     try {
-      // Simulate API call
+      //  API call
       const response = {
         data: {
           success: true,

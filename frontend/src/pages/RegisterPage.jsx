@@ -19,7 +19,6 @@ import {
 import api from "../services/api";
 import { setUser } from "../store/authSlice";
 
-// Validation schemas
 const emailSchema = yup.object({
   email: yup
     .string()
@@ -107,7 +106,7 @@ const RegisterPage = () => {
     }
   }, [timer]);
 
-  // Auto-close popup after 30 seconds
+  // Auto-close 
   useEffect(() => {
     if (showOtpPopup) {
       const autoClose = setTimeout(() => {
@@ -124,11 +123,9 @@ const RegisterPage = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      // Silent fail - no console
     }
   };
 
-  // Get masked identifier
   const getMaskedIdentifier = (identifier, type) => {
     if (type === 'email') {
       const [username, domain] = identifier.split('@');

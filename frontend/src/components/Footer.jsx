@@ -1,4 +1,3 @@
-// frontend/src/components/Footer.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -56,10 +55,8 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      {/* Main Footer */}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-16 py-12">
         
-        {/* Top Section with Newsletter */}
         <div className="border-b border-gray-800 pb-10 mb-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
@@ -79,10 +76,8 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           
-          {/* Company Info */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <span className="text-xl font-bold">CartEase</span>
@@ -111,7 +106,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2">
@@ -128,7 +122,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Shop By Category */}
           <div>
             <h4 className="font-semibold text-lg mb-4">Shop By Category</h4>
             <ul className="space-y-2">
@@ -145,7 +138,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Policies & Support */}
           <div>
             <h4 className="font-semibold text-lg mb-4">Policies & Support</h4>
             <ul className="space-y-2">
@@ -165,7 +157,6 @@ const Footer = () => {
 
       
 
-        {/* Payment Methods & Social Links */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
          
           

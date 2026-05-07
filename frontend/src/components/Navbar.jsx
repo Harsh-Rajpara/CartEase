@@ -1,4 +1,3 @@
-// frontend/src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -6,13 +5,13 @@ import { ShoppingCart, Search, Menu, X, ChevronDown, User, ShoppingBag, MapPin, 
 import { logout } from '../store/authSlice';
 import api from '../services/api';
 import AccountMenu from './AccountMenu';
-import ProfileModal from './ProfileModal'; // Import ProfileModal
+import ProfileModal from './ProfileModal'; 
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [showAccountMenu, setShowAccountMenu] = useState(false);
-    const [showProfileModal, setShowProfileModal] = useState(false); // Add this state
+    const [showProfileModal, setShowProfileModal] = useState(false); 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     
@@ -20,7 +19,6 @@ const Navbar = () => {
     const cartItems = useSelector((state) => state.cart.items);
     const { user, isAuthenticated } = useSelector((state) => state.auth);
     
-    // Show number of unique items (not total quantity)
     const numberOfItems = cartItems.length;
 
     const handleSearch = (e) => {
@@ -55,9 +53,7 @@ const Navbar = () => {
         e.preventDefault();
         e.stopPropagation();
         setShowProfileModal(true);
-        // Close mobile menu if open
         setIsOpen(false);
-        // Close account menu if open
         setShowAccountMenu(false);
     };
 
@@ -115,7 +111,6 @@ const Navbar = () => {
                                         </Link>
                                     )}
                                     
-                                    {/* Cart Icon - Only show when logged in */}
                                     <Link to="/cart" className="text-gray-700 hover:text-orange-600 relative transition-colors group">
                                         <ShoppingCart className="h-6 w-6" />
                                         {numberOfItems > 0 && (
@@ -157,9 +152,9 @@ const Navbar = () => {
                             )}
                         </div>
 
-                        {/* Mobile Icons - Cart only shows when logged in */}
+                        {/* Mobile Icons */}
                         <div className="md:hidden flex items-center space-x-4">
-                            {/* Cart Icon - Only show when logged in */}
+                            {/* Cart Icon */}
                             {isAuthenticated && (
                                 <Link to="/cart" className="text-gray-700 relative hover:text-orange-600 transition-colors">
                                     <ShoppingCart className="h-6 w-6" />
@@ -211,7 +206,7 @@ const Navbar = () => {
                         </form>
                     </div>
 
-                    {/* Mobile Menu - Fixed with all menu items */}
+                    {/* Mobile Menu  */}
                     {isOpen && (
                         <div className="md:hidden fixed inset-0 top-16 bg-white z-40 overflow-y-auto">
                             <div className="flex flex-col py-4">
@@ -240,7 +235,6 @@ const Navbar = () => {
 
                                         {/* Menu Items */}
                                         <div className="py-2">
-                                            {/* My Profile - Fixed: Changed from 'to' to button with onClick */}
                                             <button
                                                 onClick={handleProfileClick}
                                                 className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-orange-50 transition-colors"
@@ -271,7 +265,7 @@ const Navbar = () => {
 
                                             
 
-                                            {/* Seller Dashboard (if seller) */}
+                                            {/* Seller Dashboard */}
                                             {user?.role === 'seller' && (
                                                 <Link 
                                                     to="/seller/dashboard" 
@@ -285,7 +279,7 @@ const Navbar = () => {
                                                 </Link>
                                             )}
 
-                                            {/* My Products (if seller) */}
+                                            {/* My Products  */}
                                             {user?.role === 'seller' && (
                                                 <Link 
                                                     to="/seller/products" 
@@ -297,7 +291,7 @@ const Navbar = () => {
                                                 </Link>
                                             )}
 
-                                            {/* Admin Dashboard (if admin) */}
+                                            {/* Admin Dashboard */}
                                             {user?.role === 'admin' && (
                                                 <Link 
                                                     to="/admin/dashboard" 
@@ -348,7 +342,7 @@ const Navbar = () => {
                 </div>
             </nav>
 
-            {/* Profile Modal - Render conditionally */}
+            {/* Profile Modal */}
             {showProfileModal && (
                 <ProfileModal 
                     isOpen={showProfileModal} 

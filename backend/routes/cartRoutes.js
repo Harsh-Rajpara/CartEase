@@ -10,7 +10,6 @@ const {
 } = require('../controllers/cartController');
 const { protect } = require('../middleware/auth');
 
-// All cart routes require authentication
 router.use(protect);
 
 router.route('/')

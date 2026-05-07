@@ -3,8 +3,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL,        // your gmail
-    pass: process.env.EMAIL_PASS    // app password
+    user: process.env.EMAIL,      
+    pass: process.env.EMAIL_PASS    
   }
 });
 
@@ -24,7 +24,7 @@ exports.sendOTPByEmail  = async (email, otp) => {
 
     console.log("✅ Email sent successfully");
   } catch (error) {
-    console.error("❌ Email send error:", error.message);
+    console.error("Email send error:", error.message);
     throw new Error("Email failed");
   }
 };

@@ -46,7 +46,6 @@ exports.registerSellerSchema  = Joi.object({
 });
 
 
-// backend/validators/user.validator.js (add this)
 exports.otpSchema = Joi.object({
     identifier: Joi.alternatives()
         .try(

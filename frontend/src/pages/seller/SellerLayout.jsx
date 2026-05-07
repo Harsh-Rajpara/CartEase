@@ -18,7 +18,6 @@ import {
 import api from '../../services/api';
 import { logout } from '../../store/authSlice';
 
-// Import your seller components
 import SellerDashboard from '../../pages/seller/SellerDashboard';
 import SellerProducts from '../../pages/seller/SellerProducts';
 import SellerOrders from '../../pages/seller/SellerOrders';
@@ -33,7 +32,7 @@ const SellerLayout = () => {
   // Get user from Redux store
   const { user } = useSelector((state) => state.auth);
 
-  // Get current active tab from URL
+  // Get current active tab
   const getActiveTabFromPath = () => {
     const path = location.pathname;
     if (path.includes('/seller/products')) return 'products';
@@ -151,11 +150,11 @@ const SellerLayout = () => {
     );
   }
 
-  // Show approved - full dashboard
+  // Show approved 
   if (verificationStatus === 'approved') {
     return (
       <div className="min-h-screen bg-gray-100">
-        {/* Top Header Bar */}
+        {/*  Header  */}
         <div 
           className="fixed top-0 right-0 left-0 z-30 bg-white shadow-sm transition-all duration-300" 
           style={{ left: sidebarOpen && !isMobile ? '16rem' : !isMobile && !sidebarOpen ? '5rem' : '0' }}
@@ -243,7 +242,7 @@ const SellerLayout = () => {
             )}
           </div>
 
-          {/* Navigation - Using Link for proper routing */}
+          {/* Navigation  */}
           <nav className="mt-6 px-3 space-y-1">
             {navigation.map((item) => {
               const isActive = activeTab === item.id;
@@ -277,7 +276,7 @@ const SellerLayout = () => {
         
         </div>
 
-        {/* Main content - Using Routes */}
+        {/* Main content */}
         <div
           className={`transition-all duration-300 ${
             !isMobile && sidebarOpen ? 'lg:ml-64' : !isMobile && !sidebarOpen ? 'lg:ml-20' : ''
@@ -296,7 +295,6 @@ const SellerLayout = () => {
     );
   }
 
-  // Default fallback
   return null;
 };
 

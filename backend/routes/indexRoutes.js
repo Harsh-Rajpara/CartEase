@@ -3,22 +3,22 @@ const authRoutes = require("./authRoutes");
 const registrationRoutes = require('./registrationRoutes');
 const productRoutes = require('./productRoutes');
 const categoryRoutes = require('./categoryRoutes');
-const cartRoutes = require('./cartRoutes'); // Add cart routes
-const sellerRoutes = require('./sellerRoutes'); // ✅ ADD THIS LINE
-const orderRoutes = require('./orderRoutes'); // ✅ Make sure this exists
+const cartRoutes = require('./cartRoutes'); 
+const sellerRoutes = require('./sellerRoutes'); 
+const orderRoutes = require('./orderRoutes'); 
 const addressRoutes = require('./addressRoutes');
 const adminRoutes = require('./adminRoutes');
-const paymentRoutes = require('./paymentRoutes'); // ✅ ADD THIS LINE
+const paymentRoutes = require('./paymentRoutes'); 
 
 router.use("/auth", authRoutes);
-router.use('/register', registrationRoutes); // Progressive registration with OTP
+router.use('/register', registrationRoutes); 
 router.use('/products', productRoutes);
 router.use('/categories',categoryRoutes);
 router.use('/cart', cartRoutes); 
-router.use('/orders', orderRoutes); // ✅ Make sure this is present
-router.use('/seller', sellerRoutes); // ✅ ADD THIS LINE
+router.use('/orders', orderRoutes); 
+router.use('/seller', sellerRoutes); 
 router.use('/address', addressRoutes);
 router.use('/admin', adminRoutes);
-router.use('/payments', paymentRoutes); // ✅ ADD THIS LINE
+router.use('/payments', paymentRoutes); 
 
 module.exports = router;

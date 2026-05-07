@@ -79,7 +79,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    addresses: [addressSchema] // Add addresses array to user
+    addresses: [addressSchema] 
 }, {
     timestamps: true
 });

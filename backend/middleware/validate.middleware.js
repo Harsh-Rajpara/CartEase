@@ -9,9 +9,9 @@ module.exports = (schema) => (req, res, next) => {
     }
 
     const { error, value } = schema.validate(req.body, {
-        abortEarly: true, //Stop validation at first error
-        allowUnknown: false, // Do NOT allow extra fields in request
-                    stripUnknown: true  // Remove unknown fields
+        abortEarly: true, 
+        allowUnknown: false, 
+                    stripUnknown: true  
 
     })
     if (error) return res.status(400).json({ success: false, data: null, message: error.details[0].message });

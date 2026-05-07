@@ -44,15 +44,12 @@ const AddressesPage = () => {
     fetchAddresses();
   }, []);
 
-  // Handle edit from navigation state (coming from checkout)
   useEffect(() => {
     if (location.state?.editAddress) {
       const addressToEdit = location.state.editAddress;
-      // Small delay to ensure addresses are loaded or form is ready
       setTimeout(() => {
         handleOpenEditForm(addressToEdit);
       }, 100);
-      // Clear the state to prevent reopening on refresh
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -81,7 +78,6 @@ const AddressesPage = () => {
   };
 
   const handleOpenAddForm = () => {
-    // Check if user already has 2 addresses
     if (addresses.length >= 2 && !editingAddress) {
       setShowLimitModal(true);
       return;
@@ -121,7 +117,6 @@ const AddressesPage = () => {
     }));
   };
 
-  // Function to generate complete address preview
   const getCompleteAddressPreview = () => {
     const parts = [];
 
@@ -140,7 +135,6 @@ const AddressesPage = () => {
     e.preventDefault();
     setSubmitting(true);
 
-    // Check limit again before submitting (for add, not edit)
     if (!editingAddress && addresses.length >= 2) {
       showNotification("You can only add up to 2 addresses", "error");
       setSubmitting(false);
@@ -186,7 +180,6 @@ const AddressesPage = () => {
         setShowAddressForm(false);
         await fetchAddresses();
 
-        // If coming from checkout, navigate back after a short delay
         if (
           location.state?.fromCheckout ||
           sessionStorage.getItem("fromCheckout")
@@ -247,7 +240,7 @@ const AddressesPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-3 sm:px-4">
-        {/* Notification Toast - Responsive */}
+        {/* Notification Toast */}
         {notification.show && (
           <div className="fixed top-4 right-4 left-4 sm:left-auto z-50 animate-slide-in">
             <div

@@ -4,16 +4,13 @@ const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const crypto = require('crypto');
-const Razorpay = require('razorpay');  // ← Add this
+const Razorpay = require('razorpay'); 
 
-// Initialize Razorpay instance
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-// @desc    Get seller's orders with complete details
-// @route   GET /api/orders/seller/orders
-// @access  Private/Seller
+// GET /api/orders/seller/orders
 // const getSellerOrders = async (req, res) => {
 //     try {
 //         const sellerId = req.user.id;
@@ -155,9 +152,7 @@ const razorpay = new Razorpay({
 //         });
 //     }
 // };
-// @desc    Get all orders (Admin)
-// @route   GET /api/orders/admin/all-orders
-// @access  Private/Admin
+// GET /api/orders/admin/all-orders
 const getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find({})
@@ -180,9 +175,7 @@ const getAllOrders = async (req, res) => {
     }
 };
 
-// @desc    Get user's orders
-// @route   GET /api/orders/my-orders
-// @access  Private
+// GET /api/orders/my-orders
 const getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ userId: req.user.id })
@@ -203,9 +196,7 @@ const getMyOrders = async (req, res) => {
     }
 };
 
-// @desc    Get order by ID
-// @route   GET /api/orders/:orderId
-// @access  Private
+// GET /api/orders/:orderId
 const getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.orderId)
@@ -220,7 +211,6 @@ const getOrderById = async (req, res) => {
             });
         }
         
-        // Check if user has permission to view this order
         const isOwner = order.userId._id.toString() === req.user.id;
         const isSeller = order.items.some(item => 
             item.sellerId && item.sellerId._id.toString() === req.user.id
@@ -247,7 +237,6 @@ const getOrderById = async (req, res) => {
     }
 };
 
-// backend/controllers/orderController.js
 
 const updateOrderStatus = async (req, res) => {
     try {
@@ -258,7 +247,6 @@ const updateOrderStatus = async (req, res) => {
         console.log('Order ID:', orderId);
         console.log('New Status:', status);
         
-        // Valid statuses matching your schema
         const validStatuses = ['ordered', 'packed', 'shipped', 'out_of_delivery', 'delivered'];
         
         if (!validStatuses.includes(status)) {
@@ -277,11 +265,8 @@ const updateOrderStatus = async (req, res) => {
             });
         }
         
-        console.log('Current order status:', order.orderStatus);
-        console.log('Current payment status:', order.paymentStatus);
-        console.log('Payment method:', order.paymentMethod);
+
         
-        // Add to status history
         order.statusHistory = order.statusHistory || [];
         order.statusHistory.push({
             status: status,
@@ -292,12 +277,10 @@ const updateOrderStatus = async (req, res) => {
         
         order.orderStatus = status;
         
-        // 🔥 CRITICAL: Update payment status for COD orders when delivered
         if (status === 'delivered' && order.paymentMethod === 'cod') {
             order.paymentStatus = 'completed';
             console.log('✅ COD order delivered - Payment status updated to completed');
             
-            // Add payment completion to status history
             order.statusHistory.push({
                 status: status,
                 comment: 'Payment collected successfully (Cash on Delivery)',
@@ -309,9 +292,7 @@ const updateOrderStatus = async (req, res) => {
        
         
         await order.save();
-        
-        console.log('✅ Order status updated to:', order.orderStatus);
-        console.log('✅ Payment status is now:', order.paymentStatus);
+
         
         res.json({
             success: true,
@@ -327,9 +308,7 @@ const updateOrderStatus = async (req, res) => {
         });
     }
 };
-// @desc    Cancel order
-// @route   PUT /api/orders/:orderId/cancel
-// @access  Private
+// PUT /api/orders/:orderId/cancel
 const cancelOrder = async (req, res) => {
     try {
         const order = await Order.findById(req.params.orderId);
@@ -341,7 +320,6 @@ const cancelOrder = async (req, res) => {
             });
         }
         
-        // Check if user owns this order
         if (order.userId.toString() !== req.user.id && req.user.role !== 'admin') {
             return res.status(403).json({
                 success: false,
@@ -349,7 +327,6 @@ const cancelOrder = async (req, res) => {
             });
         }
         
-        // Check if order can be cancelled (only if not delivered or already cancelled)
         if (order.orderStatus === 'delivered' || order.orderStatus === 'cancelled') {
             return res.status(400).json({
                 success: false,
@@ -538,7 +515,6 @@ const checkoutFromCart = async (req, res) => {
             const cartItem = cart.items[i];
             const product = cartItem.product;
             
-            // Check if enough stock is available
             if (product.stock < cartItem.quantity) {
                 return res.status(400).json({
                     success: false,
@@ -546,7 +522,6 @@ const checkoutFromCart = async (req, res) => {
                 });
             }
             
-            // 🔥 REDUCE STOCK IMMEDIATELY
             product.stock -= cartItem.quantity;
             await product.save();
 
@@ -571,7 +546,6 @@ const checkoutFromCart = async (req, res) => {
         
         let razorpayOrder = null;
         
-        // Determine payment status based on payment method
         let paymentStatus = 'pending';
         if (paymentMethod === 'razorpay') {
             // For Razorpay, we'll create an order but payment status remains 'pending'
@@ -627,7 +601,7 @@ const checkoutFromCart = async (req, res) => {
             shippingAddress: shippingAddressString,
             phone: user.phone || '',
             paymentMethod,
-            paymentStatus: paymentStatus, // 'pending' for both COD and Razorpay initially
+            paymentStatus: paymentStatus, 
             orderStatus: 'ordered',
             razorpayOrderId: razorpayOrder?.id || null,
             notes: notes || '',
@@ -639,7 +613,6 @@ const checkoutFromCart = async (req, res) => {
             }]
         });
         
-        // Only clear cart for COD orders (Razorpay orders cleared after payment verification)
         if (paymentMethod === 'cod') {
             cart.items = [];
             cart.subtotal = 0;
@@ -677,7 +650,6 @@ const buyNow = async (req, res) => {
     try {
         const { productId, quantity, addressId, paymentMethod, variant, notes } = req.body;
         
-        // Get product details
         const product = await Product.findById(productId);
         
         if (!product) {
@@ -687,7 +659,6 @@ const buyNow = async (req, res) => {
             });
         }
 
-        // 🔥 CRITICAL FIX: Check stock BEFORE creating order
         if (product.stock < quantity) {
             return res.status(400).json({
                 success: false,
@@ -695,7 +666,6 @@ const buyNow = async (req, res) => {
             });
         }
         
-        // Check if product has seller (using 'seller' field)
         if (!product.seller) {
             return res.status(400).json({
                 success: false,
@@ -703,7 +673,6 @@ const buyNow = async (req, res) => {
             });
         }
         
-        // Get user and find the specific address
         const user = await User.findById(req.user.id);
         const address = user.addresses.id(addressId);
         
@@ -714,16 +683,13 @@ const buyNow = async (req, res) => {
             });
         }
         
-        // Format shipping address as STRING
         const shippingAddressString = `${address.flatHouseNo}, ${address.areaStreet}${address.landmark ? `, ${address.landmark}` : ''}, ${address.city}, ${address.state} - ${address.pincode}, ${address.country || 'India'}`;
         
-        // Calculate totals
         const subtotal = product.price * quantity;
         const shippingCharge = subtotal > 500 ? 0 : 40;
         const tax = subtotal * 0.05;
         const totalAmount = subtotal + shippingCharge + tax;
         
-        // Generate order number
         const orderNumber = 'ORD' + Date.now() + Math.floor(Math.random() * 100000);
         
 
@@ -731,7 +697,6 @@ const buyNow = async (req, res) => {
         await product.save();
 
 
-        // Create order items
         const orderItems = [{
             productId: product._id,
             sellerId: product.seller,
@@ -745,7 +710,6 @@ const buyNow = async (req, res) => {
         
         let razorpayOrder = null;
         
-        // 🔥 CREATE RAZORPAY ORDER IF PAYMENT METHOD IS RAZORPAY
         if (paymentMethod === 'razorpay') {
             try {
                 const options = {
@@ -794,7 +758,6 @@ const buyNow = async (req, res) => {
             }]
         });
         
-        // 🔥 RETURN RAZORPAY ORDER DATA FOR FRONTEND
         res.json({
             success: true,
             data: {
@@ -825,7 +788,6 @@ const verifyPayment = async (req, res) => {
         
         console.log('Verifying payment:', { orderId, paymentId, razorpayOrderId });
         
-        // Verify signature
         const body = `${razorpayOrderId}|${paymentId}`;
         const expectedSignature = crypto
             .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
@@ -839,7 +801,6 @@ const verifyPayment = async (req, res) => {
             });
         }
         
-        // Find order
         const order = await Order.findById(orderId);
         
         if (!order) {
@@ -849,12 +810,10 @@ const verifyPayment = async (req, res) => {
             });
         }
         
-        // ✅ Update payment details ONLY - DON'T change orderStatus
         order.paymentId = paymentId;
         order.paymentStatus = 'completed';
         order.razorpayOrderId = razorpayOrderId;
         
-        // ✅ Add to status history using existing orderStatus (which is 'ordered')
         order.statusHistory.push({
             status: order.orderStatus,  // This will be 'ordered', NOT 'confirmed'
             comment: `Payment completed successfully. Payment ID: ${paymentId}`,
@@ -867,7 +826,6 @@ const verifyPayment = async (req, res) => {
         console.log('✅ Payment verified - Order status remains:', order.orderStatus);
         console.log('✅ Payment status updated to: completed');
         
-        // Clear cart after successful payment
         const cart = await Cart.findOne({ user: req.user.id });
         if (cart && cart.items.length > 0) {
             cart.items = [];
@@ -895,9 +853,7 @@ const verifyPayment = async (req, res) => {
 };
 
 
-// @desc    Get order stats (Admin)
-// @route   GET /api/orders/admin/stats
-// @access  Private/Admin
+// GET /api/orders/admin/stats
 const getOrderStats = async (req, res) => {
     try {
         const totalOrders = await Order.countDocuments();

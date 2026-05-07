@@ -1,4 +1,3 @@
-// frontend/src/components/ProtectedRoute.jsx
 import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -10,7 +9,6 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo = '/login' }) => {
     useEffect(() => {
 }, [location]);
 
-    // Show loading state while checking authentication
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -19,12 +17,12 @@ const ProtectedRoute = ({ children, requiredRole, redirectTo = '/login' }) => {
         );
     }
 
-    // Not authenticated - redirect to login
+    //redirect to login
     if (!isAuthenticated || !user) {
         return <Navigate to={"/login"} replace />;
     }
 
-    // Check role if required
+    // Check role 
     if (requiredRole && user?.role !== requiredRole) {
         return <Navigate to="/" replace />;
     }

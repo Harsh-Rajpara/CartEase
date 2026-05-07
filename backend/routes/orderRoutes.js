@@ -23,7 +23,6 @@ router.put('/:orderId/cancel', protect, cancelOrder);
 
 router.get('/:orderId', protect, getOrderById);
 
-// Seller routes
 
 // Admin routes
 router.get('/admin/all-orders', protect, adminOnly, getAllOrders);

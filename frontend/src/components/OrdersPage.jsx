@@ -1,4 +1,3 @@
-// frontend/src/pages/OrdersPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -23,7 +22,7 @@ const OrdersPage = () => {
         cancelled: 0
     });
 
-    // Fetch orders function
+    // Fetch orders 
     const fetchOrders = useCallback(async () => {
         setLoading(true);
         try {
@@ -45,7 +44,7 @@ const OrdersPage = () => {
         }
     }, [filterStatus, sortBy]);
 
-    // Fetch orders when component mounts and when filters/sort changes
+    // Fetch orders 
     useEffect(() => {
         fetchOrders();
     }, [fetchOrders]);
@@ -64,7 +63,7 @@ const OrdersPage = () => {
     //     await fetchOrders();
     // };
 
-    // Updated status badge to match your schema
+    // Updated status 
     const getStatusBadge = (orderStatus) => {
         const statusConfig = {
             ordered: { color: 'bg-blue-100 text-blue-800', icon: Clock, text: 'Ordered' },
@@ -85,7 +84,7 @@ const OrdersPage = () => {
         );
     };
 
-    // Fixed progress steps with correct percentage calculation
+    // Fixed progress steps
     const getProgressSteps = (orderStatus) => {
         const steps = ['Ordered', 'Packed', 'Shipped', 'Out for Delivery', 'Delivered'];
         const statusMap = {
@@ -100,7 +99,6 @@ const OrdersPage = () => {
         
         let currentStep = statusMap[orderStatus] !== undefined ? statusMap[orderStatus] : 0;
         
-        // If order is cancelled, show all steps as incomplete
         if (orderStatus === 'cancelled') {
             currentStep = -1;
         }
@@ -245,7 +243,7 @@ const OrdersPage = () => {
                 )}
             </div>
 
-            {/* Order Details Modal - Responsive */}
+            {/* Order Details Modal */}
             {selectedOrder && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setSelectedOrder(null)}></div>
@@ -264,7 +262,7 @@ const OrdersPage = () => {
                         </div>
 
                         <div className="p-4 sm:p-6">
-                            {/* Order Status Timeline */}
+                            {/* Order Status */}
                             <div className="mb-6">
                                 <h3 className="font-semibold text-gray-900 mb-3 text-sm sm:text-base">Order Status</h3>
                                 {selectedOrder.orderStatus === 'cancelled' ? (
@@ -274,9 +272,9 @@ const OrdersPage = () => {
                                     </div>
                                 ) : (
                                     <div className="relative">
-                                        {/* Progress Bar Background */}
+                                        {/* Progress Bar */}
                                         <div className="absolute top-4 left-0 right-0 h-1 bg-gray-200 rounded-full -mt-0.5"></div>
-                                        {/* Progress Bar Fill */}
+                                        {/* Progress Bar */}
                                         <div 
                                             className="absolute top-4 left-0 h-1 bg-green-500 rounded-full transition-all duration-500 -mt-0.5"
                                             style={{ width: `${getProgressWidth(selectedOrder.orderStatus)}%` }}

@@ -7,7 +7,6 @@ import api from "../services/api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../store/authSlice";
 
-// Validation schemas
 const loginSchema = yup.object({
   identifier: yup
     .string()
@@ -94,7 +93,7 @@ const LoginPage = () => {
     }
   }, [showOtpPopup]);
 
-  // Copy OTP to clipboard
+  // Copy OTP 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(generatedOtp);
@@ -198,7 +197,7 @@ const LoginPage = () => {
         const userData = response.data.data;
         dispatch(setUser(userData));
         
-        // Close popup if open
+        // Close popup
         setShowOtpPopup(false);
         
         setTimeout(() => {
@@ -553,7 +552,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          {/* OR Divider - Only show in password mode */}
+          {/* OR Divider */}
           {!showOtpInput && (
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
@@ -565,7 +564,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          {/* Request OTP Button - Only show in password mode */}
+          {/* Request OTP Button  */}
           {!showOtpInput && (
             <div className="mt-6">
               <button
@@ -582,7 +581,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          {/* Create New Account Link */}
+          {/* Create New Account  */}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -605,7 +604,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          {/* Seller Registration Link */}
+          {/* Seller Registration  */}
           <div className="mt-6 text-center">
             <p className="text-xs sm:text-sm text-gray-500">
               Start selling your products?{" "}

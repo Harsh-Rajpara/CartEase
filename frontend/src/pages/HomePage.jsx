@@ -7,7 +7,6 @@ import api from '../services/api';
 import Footer from '../components/Footer';
 import axios from 'axios';
 
-// Category data with relevant images for each category
 const categories = [
   { 
     name: 'Menswear', 
@@ -99,7 +98,6 @@ const brands = [
   },
 ];
 
-// Triple the brands for seamless infinite scroll
 const tripleBrands = [...brands, ...brands, ...brands];
 
 // DealOfTheDay Component
@@ -303,9 +301,9 @@ const HomePage = () => {
 
   return (
     <div className="bg-gray-50">
-      {/* Hero Section - Different images for mobile and desktop using Tailwind responsive classes */}
+      {/* Hero Section */}
       <div className="relative text-white">
-        {/* Mobile Background Image (shows on small screens) */}
+        {/* Mobile Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat block sm:hidden"
           style={{ 
@@ -315,7 +313,7 @@ const HomePage = () => {
           }}
         />
         
-        {/* Desktop Background Image (shows on medium screens and above) */}
+        {/* Desktop Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat hidden sm:block"
           style={{ 
@@ -325,7 +323,7 @@ const HomePage = () => {
           }}
         />
         
-        {/* Dark overlay for better text readability */}
+        {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/50" />
         
         {/* Content */}
@@ -350,7 +348,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Features Section - Font decreases only below 640px */}
+      {/* Features Section*/}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-16 py-8 sm:py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-4">
           <div className="flex items-center space-x-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -491,7 +489,7 @@ const HomePage = () => {
           </div>
         ) : (featuredProducts.length > 0 || topRated.length > 0 || newArrivals.length > 0) ? (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
               {featuredProducts.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))}

@@ -1,7 +1,6 @@
 import api from './api';
 
 const addressService = {
-    // Add new address
     addAddress: async (addressData) => {
         try {
             const response = await api.post('/address/add', addressData);

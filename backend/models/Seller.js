@@ -1,4 +1,3 @@
-// server/models/Seller.js
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model(
@@ -35,7 +34,6 @@ module.exports = mongoose.model(
         default: true
     },
     
-    // Business Information
     businessName: {
         type: String,
         required: true,
@@ -64,7 +62,6 @@ module.exports = mongoose.model(
         match: /^[1-9][0-9]{5}$/
     },
     
-    // Tax Information
     gstin: {
         type: String,
         required: true,
@@ -78,7 +75,6 @@ module.exports = mongoose.model(
         match: /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/
     },
     
-    // Bank Details
     bankDetails: {
         accountNumber: {
             type: String,
@@ -100,13 +96,11 @@ module.exports = mongoose.model(
         }
     },
     
-    // Additional Information
     website: {
         type: String,
         trim: true
     },
     
-    // Documents
     documents: {
         panCard: {
             url: String,
@@ -143,7 +137,6 @@ module.exports = mongoose.model(
     },
     rejectionReason: String,
     
-    // Store Settings
     storeLogo: {
         url: String,
         publicId: String

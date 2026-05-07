@@ -24,7 +24,6 @@ exports.protect = async (req, res, next) => {
         // Verify token
         const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
-        // Attach user info to request
         req.user = {
             id: decoded.id,
             role: decoded.role

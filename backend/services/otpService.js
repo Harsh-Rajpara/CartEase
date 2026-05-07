@@ -2,7 +2,7 @@
 const otpGenerator = require('otp-generator');
 const { sendOTPByEmail } = require("./emailService");
 
-// Generate numeric OTP (6 digits)
+// Generate numeric OTP 
 exports.generateOTP = () => {
     return otpGenerator.generate(6, {
         digits: true,
@@ -12,12 +12,10 @@ exports.generateOTP = () => {
     });
 };
 
-// Alternative: Simple numeric OTP generator
 exports.generateSimpleOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-// Send OTP via Email (for development - logs to console)
 exports.sendOTPByEmail  = async (email, otp) => {
      await sendOTPByEmail (email, otp);
 

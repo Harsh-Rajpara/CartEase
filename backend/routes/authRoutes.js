@@ -1,4 +1,3 @@
-// server/routes/authRoutes.js
 const router = require('express').Router();
 const {
   // registerUser,
@@ -21,7 +20,7 @@ router.post('/seller/register',validate(registerSellerSchema), registerSeller);
 
 router.post('/send-otp', sendOTP);
 router.post('/verify-otp', validate(otpSchema), verifyOTP);
-router.post('/resend-otp', sendOTP); // Reuse sendOTP for resend
+router.post('/resend-otp', sendOTP); 
 router.post('/logout',protect,logout);
 router.post('/check-email', checkEmail);
 router.post('/check-phone', checkPhone);

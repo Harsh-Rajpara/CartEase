@@ -12,7 +12,7 @@ const otpSchema = new mongoose.Schema({
         trim: true,
         sparse: true
     },
-    associatedEmail: {  // ✅ ADD THIS FIELD
+    associatedEmail: { 
         type: String,
         lowercase: true,
         trim: true
@@ -42,7 +42,7 @@ const otpSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 600 // Auto delete after 10 minutes
+        expires: 600 
     }
 });
 

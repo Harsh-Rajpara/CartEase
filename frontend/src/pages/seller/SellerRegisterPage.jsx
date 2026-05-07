@@ -148,7 +148,7 @@ const SellerRegisterPage = () => {
     validateOnBlur: true,
   });
 
-  // Clear errors for step 3 fields when entering step 3
+  // Clear errors 
   useEffect(() => {
     if (currentStep === 3) {
       const step3Fields = ["bankAccountNumber", "bankIfscCode", "bankName", "accountHolderName"];
@@ -186,7 +186,6 @@ const SellerRegisterPage = () => {
   };
 
   const handleSellerRegistration = async () => {
-    // Get current values
     const values = formik.values;
     
     // Validate ALL fields before submission

@@ -1,9 +1,7 @@
 const Category = require('../models/Category');
-const Product = require('../models/Product');  // ✅ Add this import
+const Product = require('../models/Product');  
 
-// @desc    Get all categories
-// @route   GET /api/categories
-// @access  Public
+// GET /api/categories
 const getCategories = async (req, res) => {
   try {
     const { page = 1, limit = 20, search } = req.query;
@@ -24,7 +22,6 @@ const getCategories = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit));
     
-    // Get product count for each category
     const categoriesWithCount = await Promise.all(
       categories.map(async (category) => {
         const productCount = await Product.countDocuments({ 
@@ -60,9 +57,7 @@ const getCategories = async (req, res) => {
   }
 };
 
-// @desc    Get single category by ID
-// @route   GET /api/categories/:id
-// @access  Public
+// GET /api/categories/:id
 const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findOne({ 
@@ -90,9 +85,7 @@ const getCategoryById = async (req, res) => {
   }
 };
 
-// @desc    Create new category
-// @route   POST /api/categories
-// @access  Private/Admin
+// POST /api/categories
 const createCategory = async (req, res) => {
   try {
     const { name, description, image } = req.body;
@@ -104,7 +97,7 @@ const createCategory = async (req, res) => {
       });
     }
     
-    // Check if category already exists
+    // Check category exists
     const existingCategory = await Category.findOne({ 
       name: { $regex: new RegExp(`^${name}$`, 'i') },
       isDeleted: false 
@@ -138,9 +131,7 @@ const createCategory = async (req, res) => {
   }
 };
 
-// @desc    Update category
-// @route   PUT /api/categories/:id
-// @access  Private/Admin
+// PUT /api/categories/:id
 const updateCategory = async (req, res) => {
   try {
     const { name, description, image } = req.body;
@@ -161,7 +152,6 @@ const updateCategory = async (req, res) => {
       });
     }
     
-    // Check if new name conflicts
     if (name && name !== category.name) {
       const existingCategory = await Category.findOne({
         name: { $regex: new RegExp(`^${name}$`, 'i') },
@@ -201,9 +191,7 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// @desc    Delete category (soft delete)
-// @route   DELETE /api/categories/:id
-// @access  Private/Admin
+// DELETE /api/categories/:id
 const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -240,9 +228,7 @@ const deleteCategory = async (req, res) => {
   }
 };
 
-// @desc    Restore deleted category
-// @route   POST /api/categories/:id/restore
-// @access  Private/Admin
+// POST /api/categories/:id/restore
 const restoreCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);

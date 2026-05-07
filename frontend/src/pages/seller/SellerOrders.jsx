@@ -37,8 +37,6 @@ const SellerOrders = () => {
     fetchOrders();
   }, []);
 
-  // pages/seller/SellerOrders.jsx - Update fetchOrders function
-
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -66,7 +64,6 @@ const SellerOrders = () => {
 
         setOrders(formattedOrders);
 
-        // Display stats in console
         console.log("Seller Stats:", response.data.stats);
       } else {
         setError("Failed to load orders");

@@ -3,9 +3,7 @@ const Product = require('../models/Product');
 const Order = require('../models/Order');
 const User = require('../models/User');
 
-// @desc    Get all sellers
-// @route   GET /api/admin/sellers
-// @access  Private/Admin
+// GET /api/admin/sellers
 const getAllSellers = async (req, res) => {
   try {
     const { page = 1, limit = 10, search, status } = req.query;
@@ -31,7 +29,7 @@ const getAllSellers = async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit));
     
-    // Get product count for each seller
+    // product count
     const sellersWithCounts = await Promise.all(
       sellers.map(async (seller) => {
         const productCount = await Product.countDocuments({ seller: seller._id });
@@ -75,9 +73,7 @@ const getAllSellers = async (req, res) => {
   }
 };
 
-// @desc    Get single seller by ID
-// @route   GET /api/admin/sellers/:id
-// @access  Private/Admin
+// GET /api/admin/sellers/:id
 const getSellerById = async (req, res) => {
   try {
     const seller = await Seller.findById(req.params.id);
@@ -119,12 +115,10 @@ const getSellerById = async (req, res) => {
   }
 };
 
-// @desc    Update seller verification status
-// @route   PUT /api/admin/sellers/:id/verify
-// @access  Private/Admin
+// PUT /api/admin/sellers/:id/verify
 const updateSellerVerification = async (req, res) => {
   try {
-    const { status } = req.body; // approved, rejected, pending
+    const { status } = req.body; 
     
     if (!status) {
       return res.status(400).json({
@@ -162,9 +156,7 @@ const updateSellerVerification = async (req, res) => {
   }
 };
 
-// @desc    Update seller status (active/inactive)
-// @route   PUT /api/admin/sellers/:id/status
-// @access  Private/Admin
+// PUT /api/admin/sellers/:id/status
 const updateSellerStatus = async (req, res) => {
   try {
     const { isActive } = req.body;
@@ -195,9 +187,7 @@ const updateSellerStatus = async (req, res) => {
   }
 };
 
-// @desc    Delete seller (soft delete)
-// @route   DELETE /api/admin/sellers/:id
-// @access  Private/Admin
+// DELETE /api/admin/sellers/:id
 const deleteSeller = async (req, res) => {
   try {
     const seller = await Seller.findById(req.params.id);
@@ -209,7 +199,7 @@ const deleteSeller = async (req, res) => {
       });
     }
     
-    // Soft delete - just mark as inactive
+    // Soft delete
     seller.isActive = false;
     await seller.save();
     
@@ -226,9 +216,7 @@ const deleteSeller = async (req, res) => {
   }
 };
 
-// @desc    Get seller statistics
-// @route   GET /api/admin/sellers/stats
-// @access  Private/Admin
+// GET /api/admin/sellers/stats
 const getSellerStats = async (req, res) => {
   try {
     const totalSellers = await Seller.countDocuments();
@@ -237,11 +225,9 @@ const getSellerStats = async (req, res) => {
     const rejectedSellers = await Seller.countDocuments({ verificationStatus: 'rejected' });
     const activeSellers = await Seller.countDocuments({ isActive: true });
     
-    // Get total products from all sellers
     const allProducts = await Product.find({});
     const totalProducts = allProducts.length;
     
-    // Get total revenue from all sellers
     const orders = await Order.find({});
     let totalRevenue = 0;
     

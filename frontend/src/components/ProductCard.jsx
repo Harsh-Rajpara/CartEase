@@ -1,4 +1,3 @@
-// components/ProductCard.jsx
 import React, { useState } from 'react';
 import {  useNavigate } from 'react-router-dom';
 // import { Star, Heart, ShoppingCart } from 'lucide-react';
@@ -7,7 +6,6 @@ const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
   
-  // Get the correct image URL from the images array
   const getImageUrl = () => {
     if (product.images && product.images.length > 0) {
       const firstImage = product.images[0];
@@ -68,7 +66,7 @@ const ProductCard = ({ product }) => {
         <img
           src={imageError ? 'https://via.placeholder.com/300x200?text=No+Image' : imageUrl}
           alt={product.name}
-          className="w-full h-32 sm:h-48 object-cover"
+          className="w-full h-32 sm:h-48 object-contain"
           onError={() => setImageError(true)}
           loading="lazy"
         />
@@ -90,7 +88,6 @@ const ProductCard = ({ product }) => {
       
       {/* Content Section */}
       <div className="p-2 sm:p-4">
-        {/* Brand/Category */}
         {product.brand && (
           <p className="text-[10px] sm:text-xs text-gray-500 mb-0.5 sm:mb-1 line-clamp-1">
             {product.brand}

@@ -1,4 +1,3 @@
-// components/admin/Sellers.jsx
 import React, { useState, useEffect } from 'react';
 import { 
   Store, 
@@ -37,7 +36,6 @@ const Sellers = () => {
   const [selectedSeller, setSelectedSeller] = useState(null);
   const [updating, setUpdating] = useState(false);
   
-  // Confirmation popup state
   const [confirmationPopup, setConfirmationPopup] = useState({
     isOpen: false,
     sellerId: null,
@@ -416,7 +414,6 @@ const Sellers = () => {
             <div>
               <h2 className="text-xl font-bold text-gray-800">{selectedSeller.storeName}</h2>
               <p className="text-sm text-gray-500 mt-0.5">Seller ID: {selectedSeller.id}</p>
-              {/* Status directly below Seller ID */}
               <div className="mt-2 flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-600">Status:</span>
                 <span className={`inline-flex items-center gap-2 px-2.5 py-1 text-sm font-semibold rounded-full ${
@@ -594,10 +591,9 @@ const Sellers = () => {
         </div>
       </div>
 
-      {/* Action Buttons - Bottom */}
+      {/* Action Buttons */}
       <div className="sticky bottom-0 bg-gray-50 p-6 border-t">
         <div className="flex justify-end gap-3 flex-wrap">
-          {/* Approve Button - Hide if already approved */}
           {selectedSeller.approvalStatus !== 'approved' && (
             <button
               onClick={() => openConfirmationPopup(selectedSeller.id, 'approved')}
@@ -609,7 +605,7 @@ const Sellers = () => {
             </button>
           )}
           
-          {/* Reject Button - Hide if already rejected */}
+          {/* Reject Button */}
           {selectedSeller.approvalStatus !== 'rejected' && (
             <button
               onClick={() => openConfirmationPopup(selectedSeller.id, 'rejected')}
@@ -621,7 +617,7 @@ const Sellers = () => {
             </button>
           )}
           
-          {/* Pending Button - Hide if already pending */}
+          {/* Pending Button  */}
           {selectedSeller.approvalStatus !== 'pending' && (
             <button
               onClick={() => openConfirmationPopup(selectedSeller.id, 'pending')}

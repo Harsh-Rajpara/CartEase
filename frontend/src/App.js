@@ -1,5 +1,4 @@
-// App.js
-// App.js
+
 import React, { useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Provider, useSelector, useDispatch } from "react-redux";
@@ -39,19 +38,17 @@ import ScrollToTop from "./ScrollToTop";
 import { Loader } from "lucide-react";
 
 
-// =====================
 // APP CONTENT
-// =====================
 const AppContent = () => {
   const dispatch = useDispatch();
   const { loading, user } = useSelector((state) => state.auth);
 
-  // 🔐 Restore user from cookie
+  // Restore user from cookie
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
 
-  // 🛒 Fetch cart after login
+  // Fetch cart after login
   useEffect(() => {
     const fetchCart = async () => {
       try {
@@ -99,13 +96,13 @@ const AppContent = () => {
 
       <main className="flex-grow">
         <Routes>
-          {/* 🌐 Public Routes */}
+          {/*  Public Routes */}
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetails />} />
           <Route path="/search" element={<ProductList />} />
 
-          {/* 🔓 Auth Routes */}
+          {/*  Auth Routes */}
           <Route
             path="/login"
             element={
@@ -124,7 +121,7 @@ const AppContent = () => {
             }
           />
 
-          {/* 🔒 Protected User Routes */}
+          {/*  Protected User Routes */}
           <Route
             path="/cart"
             element={
@@ -207,7 +204,7 @@ const AppContent = () => {
             }
           />
 
-          {/* 🛠 Admin */}
+          {/* Admin */}
           <Route
             path="/admin/*"
             element={
@@ -217,7 +214,7 @@ const AppContent = () => {
             }
           />
 
-          {/* ❌ 404 */}
+          {/* 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
@@ -228,9 +225,7 @@ const AppContent = () => {
 };
 
 
-// =====================
 // ROOT APP
-// =====================
 function App() {
   return (
     <Provider store={store}>

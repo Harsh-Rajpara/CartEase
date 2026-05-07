@@ -1,8 +1,7 @@
 const User = require('../models/User');
 
-// @desc    Add new address to user
-// @route   POST /api/address/add
-// @access  Private
+
+// POST /api/address/add
 exports.addAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -26,12 +25,10 @@ exports.addAddress = async (req, res) => {
             isDefault: req.body.isDefault || false
         };
 
-        // If this is the first address or isDefault is true
         if (user.addresses.length === 0) {
             addressData.isDefault = true;
         }
 
-        // If setting as default, remove default from other addresses
         if (addressData.isDefault) {
             user.addresses.forEach(addr => {
                 addr.isDefault = false;
@@ -55,9 +52,8 @@ exports.addAddress = async (req, res) => {
     }
 };
 
-// @desc    Get user's all addresses
-// @route   GET /api/address/my-addresses
-// @access  Private
+// GET /api/address/my-addresses
+
 exports.getMyAddresses = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -83,9 +79,9 @@ exports.getMyAddresses = async (req, res) => {
     }
 };
 
-// @desc    Update address
-// @route   PUT /api/address/:addressId
-// @access  Private
+
+// PUT /api/address/:addressId
+
 exports.updateAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -121,7 +117,6 @@ exports.updateAddress = async (req, res) => {
             isDefault: req.body.isDefault || false
         };
 
-        // If setting as default, remove default from other addresses
         if (updatedAddress.isDefault) {
             user.addresses.forEach(addr => {
                 addr.isDefault = false;
@@ -145,9 +140,7 @@ exports.updateAddress = async (req, res) => {
     }
 };
 
-// @desc    Delete address
-// @route   DELETE /api/address/:addressId
-// @access  Private
+// DELETE /api/address/:addressId
 exports.deleteAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -194,9 +187,7 @@ exports.deleteAddress = async (req, res) => {
     }
 };
 
-// @desc    Set default address
-// @route   PUT /api/address/:addressId/default
-// @access  Private
+//PUT /api/address/:addressId/default
 exports.setDefaultAddress = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);

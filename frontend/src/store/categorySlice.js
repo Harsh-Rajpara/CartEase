@@ -1,4 +1,3 @@
-// frontend/src/redux/slices/admin/categorySlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import api from '../services/api';
 

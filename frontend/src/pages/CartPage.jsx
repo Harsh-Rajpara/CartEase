@@ -209,7 +209,7 @@ const CartPage = () => {
                         </div>
                     </div>
                     
-                    {/* Mobile Header - Clear Cart button on right side of title */}
+                    {/* Mobile Header - Clear Cart button */}
                     <div className="md:hidden">
                         <div className="flex items-center justify-between">
                             <div>
@@ -320,7 +320,7 @@ const CartPage = () => {
                                                         </p>
                                                     </div>
 
-                                                    {/* Quantity and Actions - Right side on desktop */}
+                                                    {/* Quantity and Actions */}
                                                     <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3">
                                                         <div className="flex items-center border rounded-lg">
                                                             <button
@@ -348,7 +348,7 @@ const CartPage = () => {
                                                     </div>
                                                 </div>
 
-                                                {/* Total Price - New row below */}
+                                                {/* Total Price*/}
                                                 <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
                                                     <p className="text-sm font-semibold text-gray-900">
                                                         Total: ₹{(item.price * item.quantity).toLocaleString()}

@@ -1,4 +1,3 @@
-// frontend/src/components/admin/CategoriesManager.jsx
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, FolderTree, X, AlertCircle, Eye, Package, ChevronLeft, ChevronRight, Loader } from 'lucide-react';
 import api from '../../services/api';
@@ -23,7 +22,6 @@ const CategoriesManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   
-  // Delete confirmation modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);

@@ -6,7 +6,7 @@ const PublicRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   if (isAuthenticated) {
-    return <Navigate to="/" replace />; // ✅ simple, no role logic
+    return <Navigate to="/" replace />; 
   }
 
   return children;

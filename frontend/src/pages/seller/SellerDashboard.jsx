@@ -1,4 +1,3 @@
-// pages/seller/SellerDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -54,19 +53,19 @@ const SellerDashboard = () => {
   const [revenueChartPeriod, setRevenueChartPeriod] = useState('monthly');
   const [error, setError] = useState('');
 
-  // Fetch initial dashboard data
+  // Fetch dashboard data
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
-  // Fetch sales data when sales period changes
+  // Fetch sales data 
   useEffect(() => {
     if (!loading) {
       fetchSalesData();
     }
   }, [salesChartPeriod]);
 
-  // Fetch revenue data when revenue period changes
+  // Fetch revenue data
   useEffect(() => {
     if (!loading) {
       fetchRevenueData();
@@ -120,7 +119,7 @@ const SellerDashboard = () => {
         setTopProducts(sortedProducts);
       }
 
-      // Fetch initial chart data
+      // Fetch chart data
       await Promise.all([
         fetchSalesData(),
         fetchRevenueData()
@@ -291,7 +290,7 @@ const SellerDashboard = () => {
 
 
 
-      {/* Charts Section - Independent Period Selectors */}
+      {/* Charts Section*/}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-lg shadow-sm p-6">
   <div className="flex justify-between items-center mb-4">

@@ -50,7 +50,7 @@ const AddressList = ({ onAddressSelect, selectedAddressId }) => {
 
     return (
         <div className="space-y-4">
-            {/* Header - Hidden on mobile, visible on desktop */}
+            {/* Header */}
             <div className="hidden sm:flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Saved Addresses</h3>
                 <button
@@ -61,7 +61,7 @@ const AddressList = ({ onAddressSelect, selectedAddressId }) => {
                 </button>
             </div>
 
-            {/* Mobile header - Just the title */}
+            {/* Mobile header */}
             <div className="sm:hidden">
                 <h3 className="text-base font-semibold">Saved Addresses</h3>
             </div>
@@ -105,7 +105,7 @@ const AddressList = ({ onAddressSelect, selectedAddressId }) => {
                         ))}
                     </div>
 
-                    {/* Manage Address Button - Below addresses on mobile, hidden on desktop */}
+                    {/* Manage Address Button */}
                     <div className="sm:hidden pt-2">
                         <button
                             onClick={handleManageAddresses}

@@ -1,4 +1,3 @@
-// pages/seller/AddProduct.jsx - Simplified Specifications Section
 
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -74,12 +73,10 @@ const AddProduct = () => {
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   
-  // Specifications state - SIMPLIFIED
   const [specifications, setSpecifications] = useState([]);
   const [newSpecKey, setNewSpecKey] = useState("");
   const [newSpecValue, setNewSpecValue] = useState("");
   
-  // Variants state
   const [variants, setVariants] = useState([]);
   const [newVariantType, setNewVariantType] = useState("");
   const [newVariantOptions, setNewVariantOptions] = useState([{ value: "", stock: "" }]);
@@ -129,7 +126,7 @@ const AddProduct = () => {
     },
   });
 
-  // Specification functions - SIMPLIFIED (just add and remove)
+  // Specification functions 
   const addSpecification = () => {
     if (newSpecKey.trim() && newSpecValue.trim()) {
       setSpecifications([
@@ -145,7 +142,7 @@ const AddProduct = () => {
     setSpecifications(specifications.filter((_, i) => i !== index));
   };
 
-  // Variant functions
+  // Variant 
   const addVariantOption = () => {
     setNewVariantOptions([...newVariantOptions, { value: "", stock: "" }]);
   };
@@ -348,7 +345,7 @@ const AddProduct = () => {
           </div>
         </div>
 
-        {/* Error/Success Messages */}
+        {/* Error Messages */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
             <div className="flex items-start">
@@ -659,7 +656,7 @@ const AddProduct = () => {
                 </div>
               )}
 
-              {/* Add new specification - Same style as variants */}
+              {/* Add new specification*/}
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -688,7 +685,7 @@ const AddProduct = () => {
             </div>
           </div>
 
-          {/* Variants (Optional) */}
+          {/* Variants*/}
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center">
               <Layers className="h-5 w-5 mr-2 text-orange-500" />

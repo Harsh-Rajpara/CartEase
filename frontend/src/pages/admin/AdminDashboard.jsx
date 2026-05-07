@@ -1,4 +1,3 @@
-// frontend/src/components/admin/AdminDashboard.jsx
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -46,7 +45,7 @@ const AdminDashboard = () => {
     setError('');
     
     try {
-      // Fetch all data in parallel
+      // Fetch all data 
       const [statsRes, ordersRes, productsRes, usersRes, sellersRes] = await Promise.all([
         api.get('/admin/stats'),
         api.get('/admin/recent-orders?limit=5'),
@@ -258,7 +257,6 @@ const AdminDashboard = () => {
 
       {/* Recent Orders & Products */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders Table - No clickable and no view all button */}
         <div className="bg-white rounded-lg shadow-sm">
           <div className="p-6 border-b">
             <h2 className="text-lg font-semibold text-gray-800">Recent Orders</h2>
@@ -307,10 +305,9 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
-          {/* Removed View All Orders button */}
         </div>
 
-        {/* Recent Products Table - No clickable and no view all button */}
+        {/* Recent Products Table */}
         <div className="bg-white rounded-lg shadow-sm">
           <div className="p-6 border-b">
             <h2 className="text-lg font-semibold text-gray-800">Recent Products</h2>
@@ -357,7 +354,6 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
-          {/* Removed View All Products button */}
         </div>
       </div>
     </div>

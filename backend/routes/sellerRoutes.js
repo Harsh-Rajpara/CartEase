@@ -205,7 +205,7 @@ const { protect } = require('../middleware/auth');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 
-// Get seller orders - FIXED VERSION
+// Get seller orders 
 router.get('/orders', protect, async (req, res) => {
   try {
     const sellerId = req.user.id;
@@ -299,21 +299,17 @@ router.get('/', protect, async (req, res) => {
         console.log('========== SELLER ORDERS ==========');
         console.log('Seller ID:', sellerId);
 
-        // Find orders that contain items from this seller
         const orders = await Order.find({
             'items.sellerId': sellerId
         }).sort({ createdAt: -1 });
 
         console.log('Orders found:', orders.length);
 
-        // Process each order
         const sellerOrders = [];
         
         for (const order of orders) {
-            // Get user details separately (no populate)
             const user = await User.findById(order.userId).select('fullName email phone');
             
-            // Filter items for this seller
             const sellerItems = order.items.filter(item => 
                 item.sellerId && item.sellerId.toString() === sellerId.toString()
             );
@@ -369,10 +365,9 @@ router.get('/', protect, async (req, res) => {
         });
     }
 });
-// Get dashboard stats - FIXED VERSION
+// Get dashboard stats
 router.get('/dashboard-stats', protect, async (req, res) => {
   try {
-    // req.user already has the seller data from middleware
     const sellerId = req.user.id;
     
     console.log('Dashboard stats for seller:', sellerId);
@@ -429,7 +424,6 @@ router.get('/dashboard-stats', protect, async (req, res) => {
   }
 });
 
-// Get seller products
 router.get('/products', protect, async (req, res) => {
   try {
     const sellerId = req.user.id;
@@ -448,7 +442,7 @@ router.get('/products', protect, async (req, res) => {
   }
 });
 
-// Get sales chart data (units sold over time)
+// Get sales chart data 
 router.get('/sales-chart', protect, async (req, res) => {
   try {
     const sellerId = req.user.id;
@@ -458,14 +452,12 @@ router.get('/sales-chart', protect, async (req, res) => {
     let dateRange = [];
     const now = new Date();
     
-    // Set up date range based on period
     switch(period) {
       case 'weekly':
         startDate = new Date(now);
         startDate.setDate(now.getDate() - 6);
         startDate.setHours(0, 0, 0, 0);
         
-        // Generate last 7 days
         for (let i = 6; i >= 0; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);
@@ -482,7 +474,6 @@ router.get('/sales-chart', protect, async (req, res) => {
         startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1);
         startDate.setHours(0, 0, 0, 0);
         
-        // Generate last 6 months
         for (let i = 5; i >= 0; i--) {
           const date = new Date();
           date.setMonth(date.getMonth() - i);
@@ -500,7 +491,6 @@ router.get('/sales-chart', protect, async (req, res) => {
         startDate = new Date(now.getFullYear() - 4, 0, 1);
         startDate.setHours(0, 0, 0, 0);
         
-        // Generate last 5 years
         for (let i = 4; i >= 0; i--) {
           const year = now.getFullYear() - i;
           dateRange.push({
@@ -527,14 +517,12 @@ router.get('/sales-chart', protect, async (req, res) => {
         }
     }
     
-    // Get orders within date range
     const orders = await Order.find({
       'items.sellerId': sellerId,
       createdAt: { $gte: startDate },
       orderStatus: { $nin: ['cancelled', 'refunded'] }
     });
     
-    // Aggregate sales data
     const salesMap = new Map();
     
     orders.forEach(order => {
@@ -547,7 +535,6 @@ router.get('/sales-chart', protect, async (req, res) => {
         dateKey = order.createdAt.getFullYear().toString();
       }
       
-      // Filter items for this seller
       const sellerItems = order.items.filter(item => 
         item.sellerId && item.sellerId.toString() === sellerId.toString()
       );
@@ -564,7 +551,6 @@ router.get('/sales-chart', protect, async (req, res) => {
       }
     });
     
-    // Build response data
     const salesData = dateRange.map(range => ({
       month: range.label,
       sales: salesMap.get(range.key)?.sales || 0,
@@ -596,7 +582,6 @@ router.get('/revenue-chart', protect, async (req, res) => {
     let dateRange = [];
     const now = new Date();
     
-    // Set up date range based on period
     switch(period) {
       case 'weekly':
         startDate = new Date(now);
@@ -661,14 +646,12 @@ router.get('/revenue-chart', protect, async (req, res) => {
         }
     }
     
-    // Get orders within date range
     const orders = await Order.find({
       'items.sellerId': sellerId,
       createdAt: { $gte: startDate },
       orderStatus: { $nin: ['cancelled', 'refunded'] }
     });
     
-    // Aggregate revenue data
     const revenueMap = new Map();
     
     orders.forEach(order => {
@@ -681,7 +664,6 @@ router.get('/revenue-chart', protect, async (req, res) => {
         dateKey = order.createdAt.getFullYear().toString();
       }
       
-      // Filter items for this seller
       const sellerItems = order.items.filter(item => 
         item.sellerId && item.sellerId.toString() === sellerId.toString()
       );
@@ -695,7 +677,6 @@ router.get('/revenue-chart', protect, async (req, res) => {
       }
     });
     
-    // Build response data
     const revenueData = dateRange.map(range => ({
       month: range.label,
       revenue: revenueMap.get(range.key) || 0

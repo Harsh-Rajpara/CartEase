@@ -1,4 +1,3 @@
-// frontend/src/components/ProfileModal.jsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { User, Mail, Phone, Calendar, X } from 'lucide-react';
@@ -19,7 +18,7 @@ const ProfileModal = ({ isOpen, onClose }) => {
                 onClick={(e) => e.stopPropagation()}
                 style={{ maxHeight: 'calc(100vh - 4rem)' }}
             >
-                {/* Header - Sticky */}
+                {/* Header */}
                 <div className="sticky top-0 bg-white rounded-t-lg">
                     <div className="flex justify-between items-center p-4 border-b">
                         <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Profile</h2>
@@ -33,7 +32,6 @@ const ProfileModal = ({ isOpen, onClose }) => {
                     </div>
                 </div>
 
-                {/* Body - Scrollable */}
                 <div className="overflow-y-auto" style={{ maxHeight: 'calc(100vh - 8rem)' }}>
                     <div className="p-4 sm:p-6">
                         {/* Avatar */}

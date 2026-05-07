@@ -53,7 +53,7 @@ const productSchema = new mongoose.Schema({
         type: [
             {
                 variantType: {
-                    type: String, // Removed enum - now accepts any string
+                    type: String, 
                     required: true
                 },
                 options: [
@@ -81,7 +81,7 @@ const productSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ['pending', 'approved', 'rejected'],
-        default: 'pending'  // ✅ Default: pending when seller adds product
+        default: 'pending'  
     },
     rating: {
         type: Number,

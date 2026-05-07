@@ -1,4 +1,3 @@
-// backend/models/TempRegistration.js
 const mongoose = require('mongoose');
 
 const tempRegistrationSchema = new mongoose.Schema({
@@ -22,12 +21,12 @@ const tempRegistrationSchema = new mongoose.Schema({
     },
     expiresAt: {
         type: Date,
-        default: () => new Date(Date.now() + 30 * 60 * 1000) // 30 minutes expiry
+        default: () => new Date(Date.now() + 30 * 60 * 1000) 
     },
     createdAt: {
         type: Date,
         default: Date.now,
-        expires: 1800 // Auto delete after 30 minutes
+        expires: 1800 
     }
 });
 

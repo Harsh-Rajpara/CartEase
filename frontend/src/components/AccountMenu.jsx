@@ -1,4 +1,3 @@
-// frontend/src/components/AccountMenu.jsx
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -26,8 +25,7 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
         e.preventDefault();
         e.stopPropagation();
         setShowProfileModal(true);
-        // Don't close the menu immediately, let modal open first
-        // onClose(); 
+        
     };
 
     const handleLogout = async (e) => {
@@ -37,7 +35,6 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
         setIsLoggingOut(true);
         
         try {
-            // Call the logout function from parent
             await onLogout();
         } catch (error) {
         } finally {
@@ -61,7 +58,7 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
                 ref={menuRef}
                 className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50"
             >
-                {/* User Header */}
+                {/* Header */}
                 <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-5">
                     <div className="flex items-center">
                         <div className="bg-white rounded-full p-2 shadow-md">
@@ -137,7 +134,7 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
                 </div>
             </div>
 
-            {/* Profile Modal - Render conditionally */}
+            {/* Profile Modal */}
             {showProfileModal && (
                 <ProfileModal 
                     isOpen={showProfileModal} 

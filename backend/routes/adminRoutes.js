@@ -71,11 +71,10 @@ router.get('/stats', protect, adminOnly, async (req, res) => {
     const totalUsers = await User.countDocuments({ role: 'user' });
     const totalSellers = await Seller.countDocuments();
     
-    // ✅ Calculate revenue from all orders (excluding cancelled)
     const revenueResult = await Order.aggregate([
       { 
         $match: { 
-          orderStatus: { $nin: ['cancelled'] }  // Exclude cancelled orders
+          orderStatus: { $nin: ['cancelled'] }  
         } 
       },
       { 
@@ -88,7 +87,6 @@ router.get('/stats', protect, adminOnly, async (req, res) => {
     
     const totalRevenue = revenueResult[0]?.total || 0;
     
-    // Calculate revenue from last month for growth
     const lastMonth = new Date();
     lastMonth.setMonth(lastMonth.getMonth() - 1);
     
@@ -107,7 +105,6 @@ router.get('/stats', protect, adminOnly, async (req, res) => {
       ? ((totalRevenue - previousMonthRevenue) / previousMonthRevenue * 100).toFixed(1)
       : 0;
     
-    // Calculate order growth
     const lastMonthOrders = await Order.countDocuments({
       orderStatus: { $nin: ['cancelled'] },
       createdAt: { $gte: lastMonth }
@@ -197,12 +194,10 @@ router.get('/sellers/count', protect, adminOnly, async (req, res) => {
 
 router.get('/users', async (req, res) => {
   try {
-    // ✅ Show both admin and user roles (exclude sellers if you have separate seller collection)
     const users = await User.find({ role: { $in: ['user', 'admin'] } })
       .select('-password')
       .sort({ createdAt: -1 });
     
-    // Get order counts for each user
     const usersWithOrders = await Promise.all(
       users.map(async (user) => {
         const orders = await Order.find({ userId: user._id });
@@ -274,7 +269,6 @@ router.patch('/users/:id/role', async (req, res) => {
   }
 });
 
-// backend/controllers/adminController.js or your route handler
 
 // Approve product
 router.patch('/products/:id/approve', protect, adminOnly, async (req, res) => {
@@ -291,7 +285,6 @@ router.patch('/products/:id/approve', protect, adminOnly, async (req, res) => {
     
     console.log('Current product status:', product.status);
     
-    // Update the product using 'status' field (not 'approvalStatus')
     product.status = 'approved';
     await product.save();
     
@@ -323,7 +316,6 @@ router.patch('/products/:id/reject', protect, adminOnly, async (req, res) => {
     
     console.log('Current product status:', product.status);
     
-    // Update the product using 'status' field
     product.status = 'rejected';
     await product.save();
     
@@ -355,7 +347,6 @@ router.patch('/products/:id/pending', protect, adminOnly, async (req, res) => {
     
     console.log('Current product status:', product.status);
     
-    // Update the product using 'status' field
     product.status = 'pending';
     await product.save();
     

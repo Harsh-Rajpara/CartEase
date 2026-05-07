@@ -1,17 +1,15 @@
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
 
-// Helper function to calculate cart totals
 const calculateCartTotals = (cart) => {
     let subtotal = 0;
     
-    // Calculate subtotal from all items
     for (const item of cart.items) {
         subtotal += item.total;
     }
     
-    const tax = subtotal * 0.05; // 5% GST
-    const shipping = subtotal > 500 ? 0 : 40; // Free shipping above ₹500
+    const tax = subtotal * 0.05; 
+    const shipping = subtotal > 500 ? 0 : 40; 
     const total = subtotal + tax + shipping;
     
     return { subtotal, tax, shipping, total };
@@ -23,7 +21,6 @@ const getCart = async (req, res) => {
       .populate('items.product', 'name images price stock brand');
     
     if (!cart) {
-      // Create empty cart if doesn't exist
       cart = await Cart.create({
         user: req.user.id,
         items: [],
@@ -33,7 +30,6 @@ const getCart = async (req, res) => {
         total: 0
       });
     } else {
-      // Calculate totals for existing cart
       const { subtotal, tax, shipping, total } = calculateCartTotals(cart);
       cart.subtotal = subtotal;
       cart.tax = tax;
@@ -77,7 +73,6 @@ const addToCart = async (req, res) => {
       });
     }
     
-    // Convert variants object to string
     let variantString = '';
     if (selectedVariants && Object.keys(selectedVariants).length > 0) {
       variantString = Object.entries(selectedVariants)
@@ -85,7 +80,6 @@ const addToCart = async (req, res) => {
         .join(', ');
     }
     
-    // Check stock
     if (product.stock < quantity) {
       return res.status(400).json({
         success: false,
@@ -93,26 +87,21 @@ const addToCart = async (req, res) => {
       });
     }
     
-    // Find or create cart
     let cart = await Cart.findOne({ user: req.user.id });
     if (!cart) {
       cart = new Cart({ user: req.user.id, items: [] });
     }
     
-    // Calculate item total
     const itemTotal = product.price * quantity;
     
-    // Check if item exists with same product and same variant
     const existingItemIndex = cart.items.findIndex(
       cartItem => cartItem.product.toString() === productId && cartItem.variants === variantString
     );
     
     if (existingItemIndex > -1) {
-      // Update existing item
       cart.items[existingItemIndex].quantity += quantity;
       cart.items[existingItemIndex].total = cart.items[existingItemIndex].price * cart.items[existingItemIndex].quantity;
     } else {
-      // Add new item
       cart.items.push({
         product: productId,
         quantity: quantity,
@@ -122,7 +111,6 @@ const addToCart = async (req, res) => {
       });
     }
     
-    // Update cart totals
     cart.subtotal = cart.items.reduce((sum, cartItem) => sum + (cartItem.price * cartItem.quantity), 0);
     cart.tax = cart.subtotal * 0.05;
     cart.shipping = cart.subtotal > 500 ? 0 : 40;
@@ -146,9 +134,7 @@ const addToCart = async (req, res) => {
   }
 };
 
-// @desc    Update cart item quantity
-// @route   PUT /api/cart/update/:itemId
-// @access  Private
+// PUT /api/cart/update/:itemId
 const updateCartItem = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -193,7 +179,6 @@ const updateCartItem = async (req, res) => {
     cart.items[itemIndex].quantity = quantity;
     cart.items[itemIndex].total = cart.items[itemIndex].price * quantity;
     
-    // Recalculate all totals
     const { subtotal, tax, shipping, total } = calculateCartTotals(cart);
     cart.subtotal = subtotal;
     cart.tax = tax;
@@ -217,9 +202,7 @@ const updateCartItem = async (req, res) => {
   }
 };
 
-// @desc    Remove item from cart
-// @route   DELETE /api/cart/remove/:itemId
-// @access  Private
+// DELETE /api/cart/remove/:itemId
 const removeFromCart = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -236,7 +219,6 @@ const removeFromCart = async (req, res) => {
       item => item._id.toString() !== itemId
     );
     
-    // Recalculate all totals
     const { subtotal, tax, shipping, total } = calculateCartTotals(cart);
     cart.subtotal = subtotal;
     cart.tax = tax;
@@ -260,9 +242,7 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-// @desc    Clear entire cart
-// @route   DELETE /api/cart/clear
-// @access  Private
+// DELETE /api/cart/clear
 const clearCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user.id });

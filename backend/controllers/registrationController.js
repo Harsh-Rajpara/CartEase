@@ -1,4 +1,3 @@
-// backend/controllers/registrationController.js
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
@@ -23,7 +22,6 @@ const generateTokens = (user, role) => {
 
 // Send OTP helper
 const sendOTPHelper = async (type, value, purpose, sessionEmail = null) => {
-    // Check rate limiting
     const recentOtp = await Otp.findOne({
         [type]: value,
         purpose: purpose,
@@ -48,7 +46,6 @@ const sendOTPHelper = async (type, value, purpose, sessionEmail = null) => {
     const otpData = { otp, purpose, expiresAt: new Date(Date.now() + 10 * 60 * 1000) };
     otpData[type] = value;
     
-    // For phone OTP, also store the associated email
     if (purpose === 'phone_verification' && sessionEmail) {
         otpData.associatedEmail = sessionEmail;
     }
@@ -83,7 +80,6 @@ exports.sendEmailOTP = async (req, res) => {
             });
         }
 
-        // Create temporary registration session
         await TempRegistration.findOneAndUpdate(
             { email: email.toLowerCase() },
             { email: email.toLowerCase(), emailVerified: false, expiresAt: new Date(Date.now() + 30 * 60 * 1000) },
@@ -212,12 +208,12 @@ exports.sendPhoneOTP = async (req, res) => {
         const otp = otpService.generateSimpleOTP();
         console.log('Generated OTP:', otp);
         
-        // ✅ FIX: Save OTP with associatedEmail
+        //  FIX: Save OTP with associatedEmail
         const newOtp = await Otp.create({
             phone: phone,
             otp: otp,
             purpose: 'phone_verification',
-            associatedEmail: email.toLowerCase(),  // ✅ ADD THIS LINE
+            associatedEmail: email.toLowerCase(),  
             expiresAt: new Date(Date.now() + 10 * 60 * 1000)
         });
         
@@ -229,7 +225,7 @@ exports.sendPhoneOTP = async (req, res) => {
         res.json({
             success: true,
             message: "OTP sent to your phone",
-            data: { phone, email, otp: otp } // For testing only
+            data: { phone, email, otp: otp } 
         });
 
     } catch (error) {
@@ -268,7 +264,7 @@ exports.verifyPhoneOTP = async (req, res) => {
             phone: phone,
             otp: otp,
             purpose: 'phone_verification',
-            associatedEmail: email.toLowerCase(),  // ✅ Now this will work
+            associatedEmail: email.toLowerCase(),  
             isUsed: false,
             expiresAt: { $gt: new Date() }
         });

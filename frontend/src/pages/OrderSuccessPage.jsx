@@ -36,7 +36,6 @@ const OrderSuccessPage = () => {
   const [countdown, setCountdown] = useState(5);
   const [downloading, setDownloading] = useState(false);
 
-  // Get order ID from URL params or location state
   const orderId = new URLSearchParams(location.search).get('orderId') || 
                   location.state?.orderId;
 
@@ -49,12 +48,10 @@ const OrderSuccessPage = () => {
 
     fetchOrderDetails();
     
-    // Clear cart from Redux after successful order
     dispatch(clearCart());
   }, [orderId]);
 
   useEffect(() => {
-    // Redirect countdown
     if (countdown > 0 && error) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
@@ -172,7 +169,6 @@ const OrderSuccessPage = () => {
     );
   }
 
-  // Safe data extraction with fallbacks
   const orderItems = order.items || [];
   const subtotal = order.subtotal || 0;
   const shipping = order.shipping !== undefined ? order.shipping : (subtotal > 500 ? 0 : 40);
@@ -186,7 +182,7 @@ const OrderSuccessPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-gray-50 py-6 px-3 sm:py-8 sm:px-4 md:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        {/* Success Header */}
+        {/*  Header */}
         <div className="text-center mb-6 sm:mb-8 animate-bounce-in">
           <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-green-100 rounded-full mb-3 sm:mb-4 shadow-lg">
             <CheckCircle className="h-11 w-11 sm:h-14 sm:w-14 text-green-600" />
@@ -237,7 +233,7 @@ const OrderSuccessPage = () => {
             </div>
           </div>
 
-          {/* Order Items - Mobile Optimized (Total amount removed on mobile) */}
+          {/* Order Items  */}
           <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
             <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2 text-base sm:text-lg">
               <Package className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -246,7 +242,7 @@ const OrderSuccessPage = () => {
             <div className="space-y-3 sm:space-y-4">
               {orderItems.map((item, index) => (
                 <div key={index} className="flex items-center gap-3 sm:gap-4 pb-3 sm:pb-4 border-b border-gray-100 last:border-0 hover:bg-gray-50 p-2 sm:p-3 rounded-lg">
-                  {/* Product Image - Left side */}
+                  {/* Product Image */}
                   <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={item.image || '/api/placeholder/100/100'}
@@ -258,7 +254,7 @@ const OrderSuccessPage = () => {
                     />
                   </div>
                   
-                  {/* Product Details - Right side */}
+                  {/* Product Details */}
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900 text-sm sm:text-base mb-1">
                       {item.name || 'Product'}
@@ -272,7 +268,7 @@ const OrderSuccessPage = () => {
                           ₹{(item.price || 0).toLocaleString()}
                         </p>
                       </div>
-                      {/* Total amount - Hidden on mobile, visible on desktop */}
+                      {/* Total amount*/}
                       <p className="hidden sm:block font-bold text-orange-600 text-sm sm:text-base">
                         ₹{(item.total || (item.price * item.quantity) || 0).toLocaleString()}
                       </p>
@@ -283,7 +279,7 @@ const OrderSuccessPage = () => {
             </div>
           </div>
 
-          {/* Price Summary - Redesigned like Delivery Address & Payment Info */}
+          {/* Price Summary */}
           <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-gray-100">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2 text-sm sm:text-base md:text-lg">
               <IndianRupee className="h-4 w-4 sm:h-5 sm:w-5" />

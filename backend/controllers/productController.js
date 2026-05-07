@@ -2,8 +2,7 @@ const Product = require("../models/Product");
 const Seller = require("../models/Seller");
 const Category = require("../models/Category");
 
-// @desc    Get all products (public)
-// @route   GET /api/products
+// GET /api/products
 const getAllProducts = async (req, res) => {
   try {
     const {
@@ -82,7 +81,6 @@ const getAllProducts = async (req, res) => {
   }
 };
 
-// @desc    Get single product
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -109,7 +107,6 @@ const getProductById = async (req, res) => {
   }
 };
 
-// @desc    Add new product with Cloudinary
 const addProduct = async (req, res) => {
   try {
     console.log("User ID from token:", req.user.id);
@@ -312,7 +309,7 @@ const addProduct = async (req, res) => {
   }
 };
 
-// @desc    Delete product
+//  Delete product
 const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -352,7 +349,7 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-// @desc    Get seller products
+//Get seller products
 const getSellerProducts = async (req, res) => {
   try {
     const seller = await Seller.findById(req.user.id);
@@ -374,7 +371,7 @@ const getSellerProducts = async (req, res) => {
   }
 };
 
-// @desc    Update product stock (no approval needed)
+//Update product stock (no approval needed)
 const updateProductStock = async (req, res) => {
     try {
         const sellerId = req.user.id;
@@ -425,7 +422,6 @@ const updateProductStock = async (req, res) => {
     }
 };
 
-// backend/controllers/productController.js
 
 const updateProduct = async (req, res) => {
     try {
@@ -555,7 +551,7 @@ const updateProduct = async (req, res) => {
     }
 };
 
-// @desc    Get product count by category
+//Get product count by category
 const getProductCountByCategory = async (req, res) => {
   try {
     const { category } = req.query;

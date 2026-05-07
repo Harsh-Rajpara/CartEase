@@ -20,14 +20,11 @@ const ProductList = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(true);
   
-  // Separate state for price range inputs
   const [tempMinPrice, setTempMinPrice] = useState(searchParams.get('minPrice') || '');
   const [tempMaxPrice, setTempMaxPrice] = useState(searchParams.get('maxPrice') || '');
   
-  // Get search from URL (supports both 'search' and 'q')
   const urlSearchQuery = searchParams.get('search') || searchParams.get('q') || '';
   
-  // Multiple categories as array
   const [selectedCategories, setSelectedCategories] = useState(() => {
     const categoriesParam = searchParams.get('categories');
     return categoriesParam ? categoriesParam.split(',') : [];
@@ -40,10 +37,8 @@ const ProductList = () => {
     search: urlSearchQuery
   });
 
-  // Configure axios to send cookies
   axios.defaults.withCredentials = true;
 
-  // Sync filters with URL changes
   useEffect(() => {
     const newSearchQuery = searchParams.get('search') || searchParams.get('q') || '';
     setFilters(prev => ({
@@ -55,12 +50,10 @@ const ProductList = () => {
     }));
   }, [searchParams]);
 
-  // Fetch categories from API
   useEffect(() => {
     fetchCategories();
   }, []);
 
-  // Fetch products when filters change
   useEffect(() => {
     setVisibleCount(16);
     setHasMore(true);
@@ -83,14 +76,12 @@ const ProductList = () => {
         categoriesData = [];
       }
       
-      // Sort categories by productCount (highest first) and take top 20
       const sortedCategories = categoriesData
         .sort((a, b) => (b.productCount || 0) - (a.productCount || 0))
         .slice(0, 20);
       
       setCategories(sortedCategories);
     } catch (error) {
-      // Silent fail - no console
       setCategoryError(error.response?.data?.message || error.message || 'Could not connect to server');
     }
   };
@@ -107,7 +98,6 @@ const ProductList = () => {
 
       const params = new URLSearchParams();
       
-      // Multiple categories support
       if (selectedCategories.length > 0) {
         params.append('categories', selectedCategories.join(','));
       }
@@ -115,7 +105,6 @@ const ProductList = () => {
       if (filters.minPrice) params.append('minPrice', filters.minPrice);
       if (filters.maxPrice) params.append('maxPrice', filters.maxPrice);
       
-      // Send search term to backend
       if (filters.search && filters.search.trim()) {
         params.append('search', filters.search.trim());
       }
@@ -161,7 +150,6 @@ const ProductList = () => {
         setError(response.data.message || 'Failed to fetch products');
       }
     } catch (error) {
-      // Silent fail - no console
       setError(error.response?.data?.message || 'Failed to load products. Please try again.');
     } finally {
       setLoading(false);
@@ -185,7 +173,6 @@ const ProductList = () => {
     
     setSelectedCategories(newCategories);
     
-    // Update URL params
     if (newCategories.length > 0) {
       searchParams.set('categories', newCategories.join(','));
     } else {
@@ -224,26 +211,22 @@ const ProductList = () => {
     setSearchParams(searchParams);
   };
 
-  // FIXED: Clear all filters including search
   const clearFilters = () => {
     setSelectedCategories([]);
     setFilters({
       minPrice: '',
       maxPrice: '',
       sort: 'newest',
-      search: ''  // Clear search
+      search: '' 
     });
     setTempMinPrice('');
     setTempMaxPrice('');
     
-    // Clear ALL search params - create completely new empty URLSearchParams
     const newParams = new URLSearchParams();
-    // Optionally preserve sort as 'newest'
-    // newParams.set('sort', 'newest');
+ 
     setSearchParams(newParams);
   };
 
-  // FIXED: Remove category filter and update URL properly
   const removeCategoryFilter = (category) => {
     const newCategories = selectedCategories.filter(c => c !== category);
     setSelectedCategories(newCategories);
@@ -256,7 +239,6 @@ const ProductList = () => {
     setSearchParams(searchParams);
   };
 
-  // FIXED: Clear search only
   const clearSearchFilter = () => {
     setFilters(prev => ({ ...prev, search: '' }));
     searchParams.delete('search');
@@ -413,7 +395,7 @@ const ProductList = () => {
                 </select>
               </div>
 
-              {/* Categories - Expandable with Multi-select */}
+              {/* Categories */}
               <div className="mb-6 pb-4 border-b border-gray-200">
                 <button
                   onClick={() => setIsCategoryExpanded(!isCategoryExpanded)}
