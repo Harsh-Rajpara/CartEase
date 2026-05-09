@@ -147,20 +147,20 @@ const ProductDetails = () => {
           (p) => p._id !== product._id && p.status === "approved",
         );
 
-        if (products.length >= 4) {
-          setRelatedProducts(products.slice(0, 4));
-        } else if (products.length > 0 && products.length < 4) {
+        if (products.length >= 5) {
+          setRelatedProducts(products.slice(0, 5));
+        } else if (products.length > 0 && products.length < 5) {
           setRelatedProducts(products);
-          fetchRandomProducts(4 - products.length);
+          fetchRandomProducts(5 - products.length);
         } else {
-          fetchRandomProducts(4);
+          fetchRandomProducts(5);
         }
       } else {
-        fetchRandomProducts(4);
+        fetchRandomProducts(5);
       }
     } catch (error) {
       console.error("Error fetching related products:", error);
-      fetchRandomProducts(4);
+      fetchRandomProducts(5);
     } finally {
       setRelatedLoading(false);
     }
@@ -704,7 +704,7 @@ const ProductDetails = () => {
                     className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition disabled:opacity-50 flex items-center justify-center text-sm sm:text-base"
                   >
                    
-                      "Buy Now"
+                      Buy Now
                    
                   </button>
                 </div>
@@ -824,7 +824,7 @@ const ProductDetails = () => {
         {/* Related Products Section  */}
         {relatedProducts.length > 0 && (
           <div className="mt-8 sm:mt-12 mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4 sm:mb-6">
+            <div className="flex justify-between items-center gap-2 mb-4 sm:mb-6">
               <div>
                 <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
                   Related Products
@@ -843,8 +843,8 @@ const ProductDetails = () => {
             </div>
 
             {relatedLoading ? (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-                {[1, 2, 3, 4].map((i) => (
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+                {[1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
                     className="bg-gray-100 rounded-lg h-60 sm:h-80 animate-pulse"
@@ -852,7 +852,7 @@ const ProductDetails = () => {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
                 {relatedProducts.map((relatedProduct) => (
                   <ProductCard
                     key={relatedProduct._id}
