@@ -1,51 +1,30 @@
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-
+  service: "gmail",
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS,
-  },
-
-  family: 4, // FORCE IPv4
-
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
-
-transporter.verify((error, success) => {
-  if (error) {
-    console.log("SMTP ERROR:", error);
-  } else {
-    console.log("SMTP READY");
+    user: process.env.EMAIL,      
+    pass: process.env.EMAIL_PASS    
   }
 });
 
-exports.sendOTPByEmail = async (email, otp) => {
+exports.sendOTPByEmail  = async (email, otp) => {
   try {
-    console.log("Sending email to:", email);
-
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: `"CartEase" <${process.env.EMAIL}>`,
       to: email,
       subject: "Your OTP Code",
       html: `
         <h2>OTP Verification</h2>
+        <p>Your OTP is:</p>
         <h1>${otp}</h1>
-      `,
+        <p>This OTP will expire in 5 minutes.</p>
+      `
     });
 
-    console.log("EMAIL SENT");
-    console.log(info);
-
+    console.log("✅ Email sent successfully");
   } catch (error) {
-    console.log("FULL EMAIL ERROR:");
-    console.log(error);
-
+    console.error("Email send error:", error.message);
     throw new Error("Email failed");
   }
 };
