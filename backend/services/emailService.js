@@ -10,6 +10,9 @@ const transporter = nodemailer.createTransport({
 
 exports.sendOTPByEmail  = async (email, otp) => {
   try {
+
+    console.log("Sending email to:", email);
+    
     await transporter.sendMail({
       from: `"CartEase" <${process.env.EMAIL}>`,
       to: email,
