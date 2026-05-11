@@ -297,7 +297,7 @@ const OrdersPage = () => {
                                                             <span className="text-xs sm:text-sm">{idx + 1}</span>
                                                         )}
                                                     </div>
-                                                    <p className={`text-[10px] sm:text-xs mt-1 sm:mt-2 ${step.active ? 'font-semibold text-orange-600' : 'text-gray-500'}`}>
+                                                    <p className={`text-[10px] sm:text-xs mt-1 sm:mt-2 ${step.active ? 'font-semibold text-gray-500' : 'text-gray-500'}`}>
                                                         {step.name}
                                                     </p>
                                                 </div>

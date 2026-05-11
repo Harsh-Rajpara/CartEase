@@ -71,7 +71,7 @@ const AccountMenu = ({ user, onClose, onLogout }) => {
                     </div>
                     <div className="mt-3 flex items-center space-x-2">
                         <span className="text-xs bg-orange-500 px-2 py-0.5 rounded-full">
-                            {user?.role === 'seller' ? 'Seller Account' : 'User Account'}
+                            {user?.role === 'seller' ? 'Seller Account' : user?.role === "admin" ? 'Admin Account' : 'Customer Account' }
                         </span>
                     </div>
                 </div>
