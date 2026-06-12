@@ -16,8 +16,8 @@ const {
 } = require('../validators/registration.validator');
 
 // Step 1: Email OTP
-// router.post('/send-email-otp', validate(emailOTPSchema), sendEmailOTP);
-// router.post('/verify-email-otp', validate(verifyEmailOTPSchema), verifyEmailOTP);
+router.post('/send-email-otp', validate(emailOTPSchema), sendEmailOTP);
+router.post('/verify-email-otp', validate(verifyEmailOTPSchema), verifyEmailOTP);
 
 // Step 2: Phone OTP
 router.post('/send-phone-otp', validate(phoneOTPSchema), sendPhoneOTP);
