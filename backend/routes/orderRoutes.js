@@ -15,6 +15,7 @@ const {
 } = require('../controllers/orderController');
 
 // User routes
+
 router.post('/checkout', protect, checkoutFromCart);
 router.post('/buy-now', protect, buyNow);
 router.post('/verify-payment', protect, verifyPayment); 
